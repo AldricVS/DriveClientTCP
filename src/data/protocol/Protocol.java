@@ -65,7 +65,7 @@ public class Protocol {
 		//add the action code at the beginning
 		StringBuilder stringBuilder = new StringBuilder('<');
 		stringBuilder.append(actionCode.getCode());
-		stringBuilder.append('>');
+		//stringBuilder.append('>');
 		
 		//then, add all options one after another
 		for(String option : options) {

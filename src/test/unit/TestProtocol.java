@@ -19,6 +19,6 @@ public class TestProtocol {
 		ActionCodes Connect = ActionCodes.CONNECTION;
 		protocol = new Protocol(Connect);
 		System.out.println(protocol.toString());
-		assertEquals(ActionCodes.CONNECTION.getCode(), protocol.toString());
+		assertEquals("<" + ActionCodes.CONNECTION.getCode() + ">", protocol.toString());
 	}
 }

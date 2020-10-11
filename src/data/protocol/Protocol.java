@@ -63,9 +63,10 @@ public class Protocol {
 	public String toString() {
 		//create StringBuilder to ensure good performance, even if there is many Strings to append
 		//add the action code at the beginning
-		StringBuilder stringBuilder = new StringBuilder('<');
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append('<');
 		stringBuilder.append(actionCode.getCode());
-		//stringBuilder.append('>');
+		stringBuilder.append('>');
 		
 		//then, add all options one after another
 		for(String option : options) {

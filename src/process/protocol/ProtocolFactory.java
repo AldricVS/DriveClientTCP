@@ -19,10 +19,9 @@ public class ProtocolFactory {
 	public static Protocol createConnectionProtocol(String userName, String password, boolean isAdmin) {
 		Protocol protocol;
 		if(isAdmin) {
-			protocol = new Protocol(ActionCodes.CONNECTION);
+			protocol = new Protocol(ActionCodes.CONNECTION_ADMIN);
 		}else {
-			// TODO changer ici (mettre un nouveau code pour connection en tant qu'admin)
-			protocol = new Protocol(ActionCodes.CONNECTION);
+			protocol = new Protocol(ActionCodes.CONNECTION_NORMAL);
 		}
 		protocol.appendOption(userName);
 		protocol.appendOption(password);

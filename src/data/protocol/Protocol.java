@@ -29,6 +29,11 @@ public class Protocol {
 		this.actionCode = actionCode;
 	}
 	
+	public Protocol(ActionCodes actionCode, List<String> args) {
+		this.actionCode = actionCode;
+		options = args;
+	}
+
 	public ActionCodes getActionCode() {
 		return actionCode;
 	}

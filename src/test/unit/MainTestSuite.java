@@ -11,7 +11,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	TestProtocolCreation.class
+	TestProtocolCreation.class,
+	TestProtocolExtractor.class
 })
 public class MainTestSuite {
 }

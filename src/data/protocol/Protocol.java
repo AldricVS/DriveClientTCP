@@ -33,6 +33,10 @@ public class Protocol {
 		this.actionCode = actionCode;
 		options = args;
 	}
+	
+	public List<String> getOptionsList(){
+		return options;
+	}
 
 	public ActionCodes getActionCode() {
 		return actionCode;
@@ -66,20 +70,11 @@ public class Protocol {
 	 * @return the string to send
 	 */
 	public String toString() {
-		//create StringBuilder to ensure good performance, even if there is many Strings to append
-		//add the action code at the beginning
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append('<');
-		stringBuilder.append(actionCode.getCode());
-		stringBuilder.append('>');
-		
-		//then, add all options one after another
-		for(String option : options) {
-			stringBuilder.append('<');
-			stringBuilder.append(option);
-			stringBuilder.append('>');
+		StringBuilder sb = new StringBuilder();
+		sb.append(actionCode.getCode() + " ");
+		for(String s : options) {
+			sb.append(s + " -- ");
 		}
-		
-		return stringBuilder.toString();
+		return sb.toString();
 	}
 }

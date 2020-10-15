@@ -71,9 +71,13 @@ public class Protocol {
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(actionCode.getCode() + " ");
-		for(String s : options) {
-			sb.append(s + " -- ");
+		sb.append('<');
+		sb.append(actionCode.getCode());
+		sb.append('>');
+		for (String s : options) {
+			sb.append('<');
+			sb.append(s);
+			sb.append('>');
 		}
 		return sb.toString();
 	}

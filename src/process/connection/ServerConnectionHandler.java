@@ -1,7 +1,7 @@
 /**
  * 
  */
-package process.protocol;
+package process.connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,11 +10,16 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.Logger;
+
+import logger.LoggerUtility;
+
 /**
  * This class will handle all things related to the connection with the server
  * @author Aldric
  */
 public class ServerConnectionHandler {
+	private static Logger logger = LoggerUtility.getLogger(ServerConnectionHandler.class, LoggerUtility.LOG_PREFERENCE);
 
 	/**
 	 * The socket where client and server will send data to each other
@@ -39,9 +44,11 @@ public class ServerConnectionHandler {
 	 * @throws UnknownHostException if can't connect to server
 	 */
 	public ServerConnectionHandler(String ipAdress, int port) throws UnknownHostException, IOException{
+		logger.info(String.format("Attempting connection to server with IP adress %s and port %d", ipAdress, port));
 		socket = new Socket(ipAdress, port);
 		inputFlow = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		outputFlow = new PrintWriter(socket.getOutputStream(), true);
+		logger.info("Successful server connection !");
 	}
 
 }

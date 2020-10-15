@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import data.Protocol;
 import data.enums.ActionCodes;
-import data.protocol.Protocol;
 import exceptions.InvalidProtocolException;
 import process.protocol.ProtocolExtractor;
 

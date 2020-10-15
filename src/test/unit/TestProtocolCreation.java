@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import data.protocol.Protocol;
 import process.protocol.ProtocolFactory;
+import data.Protocol;
 import data.enums.ActionCodes;
 
 import org.junit.Before;

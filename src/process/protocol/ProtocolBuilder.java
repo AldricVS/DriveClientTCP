@@ -1,7 +1,7 @@
 package process.protocol;
 
+import data.Protocol;
 import data.enums.ActionCodes;
-import data.protocol.Protocol;
 
 public class ProtocolBuilder {
 	private Protocol protocol;

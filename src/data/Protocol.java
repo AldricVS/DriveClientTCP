@@ -11,7 +11,7 @@ import data.enums.ActionCodes;
  * A protocol string is composed like this : <p>
  * {@code <Action code><option 1><option 2>...<option n>}<p>
  * The number of options will vary depending of the action code 
- * @author Aldric Vitali Silvestre
+ * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  *
  */
 public class Protocol {
@@ -36,6 +36,18 @@ public class Protocol {
 	
 	public List<String> getOptionsList(){
 		return options;
+	}
+	
+	public int getOptionsListSize() {
+		return options.size();
+	}
+	
+	/**
+	 * @param index the position of the string in the list
+	 * @return the string at specified position or {@code null} if index is out of bounds
+	 */
+	public String getOptionsElement(int index) {
+		return options.get(index);
 	}
 
 	public ActionCodes getActionCode() {

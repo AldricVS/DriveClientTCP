@@ -20,4 +20,10 @@ public class TestProtocolCreation {
 		Protocol protocol = ProtocolFactory.createConnectionProtocol("Billy", "billytheboss43", false);
 		assertEquals("<0001><Billy><billytheboss43>", protocol.toString());
 	}
+	
+	@Test
+	public void createAdminConnectionProtocol() {
+		Protocol protocol = ProtocolFactory.createConnectionProtocol("Bernard", "delavillardiere", true);
+		assertEquals("<0002><Bernard><delavillardiere>", protocol.toString());
+	}
 }

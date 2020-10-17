@@ -17,7 +17,7 @@ public class TestProtocolExtractor {
 	public void extractSimpleProtocol() throws InvalidProtocolException {
 		String protocolString = "<0001><Billy><Bernard>";
 		ProtocolExtractor protocolExtractor = new ProtocolExtractor(protocolString);
-		Protocol protocol = protocolExtractor.extract();
+		Protocol protocol = protocolExtractor.getProtocol();
 		
 		assertEquals(ActionCodes.CONNECTION_NORMAL, protocol.getActionCode());
 		List<String> optionsList = protocol.getOptionsList();
@@ -30,8 +30,6 @@ public class TestProtocolExtractor {
 		String protocolString = "<0001><Billy<>Bernard>";
 		
 		ProtocolExtractor protocolExtractor = new ProtocolExtractor(protocolString);
-		//error when parsing ('<' before closing '>' 
-		Protocol protocol = protocolExtractor.extract();
 	}
 	
 	@Test(expected = InvalidProtocolException.class)
@@ -39,7 +37,5 @@ public class TestProtocolExtractor {
 		String protocolString = "<8989><Billy>Bernard>";
 		
 		ProtocolExtractor protocolExtractor = new ProtocolExtractor(protocolString);
-		//The code 8989 is not a valid code 
-		Protocol protocol = protocolExtractor.extract();
 	}
 }

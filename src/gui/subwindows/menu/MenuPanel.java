@@ -9,7 +9,7 @@ import gui.MainWindow;
 
 /**
  * 
- * @author Aldric Vitali Silvestre <aldric.vitali@outtlok.fr>
+ * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  */
 public class MenuPanel extends JPanel {
 

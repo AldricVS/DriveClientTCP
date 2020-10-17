@@ -23,7 +23,7 @@ import logger.LoggerUtility;
  * The main window that user will interact with during all process. This window
  * contains all pages used for this app.
  * 
- * @author Aldric Vitali Silvestre <aldric.vitali@outtlok.fr>
+ * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  */
 public class MainWindow extends JFrame {
 	private static Logger logger = LoggerUtility.getLogger(MainWindow.class, LoggerUtility.LOG_PREFERENCE);
@@ -69,7 +69,8 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		pack();
 		setLocationRelativeTo(null);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		//TODO : put DO_NOTHING_ON_CLOSE when window close event finished 
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		addWindowListener(new WindowCloseListener());
 		setResizable(false);
 	}

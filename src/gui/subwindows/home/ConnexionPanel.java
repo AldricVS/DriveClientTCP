@@ -25,7 +25,7 @@ import gui.MainWindow;
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  */
-public class HomePanel extends JPanel {
+public class ConnexionPanel extends JPanel {
 
 	private MainWindow context;
 	
@@ -34,12 +34,12 @@ public class HomePanel extends JPanel {
 	 */
 	private final Dimension TITLE_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	private JPanel titlePanel = new JPanel();
-	private JLabel titlelabel = new JLabel("Drivepicerie - Connection", SwingConstants.CENTER);
+	private JLabel titlelabel = new JLabel("Drivepicerie - Connexion", SwingConstants.CENTER);
 	
 	/**
 	 * TEXT FIELDS
 	 */
-	private final Dimension FIELDS_DIMENSION = new Dimension(GuiConstants.WIDTH, 5 * GuiConstants.HEIGHT / 8);
+	private final Dimension FIELDS_DIMENSION = new Dimension(GuiConstants.WIDTH / 24, 5 * GuiConstants.HEIGHT / 12);
 	private JPanel fieldsPanel = new JPanel();
 	private JLabel loginLabel = new JLabel("Identifiant", SwingConstants.CENTER);
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
@@ -51,10 +51,10 @@ public class HomePanel extends JPanel {
 	 */
 	private final Dimension BUTTONS_DIMENSION = new Dimension(GuiConstants.WIDTH, 2* GuiConstants.HEIGHT / 8);
 	private JPanel buttonsPanel = new JPanel();
-	private JButton connectionNormalButton = new JButton("Connection");
-	private JButton connectionAdminButton = new JButton("Connection en tant qu'admninistrateur");
+	private JButton connectionNormalButton = new JButton("Connexion");
+	//private JButton connectionAdminButton = new JButton("Connexion en tant qu'admninistrateur");
 	
-	public HomePanel(MainWindow context) {
+	public ConnexionPanel(MainWindow context) {
 		this.context = context;
 		init();
 	}
@@ -97,7 +97,11 @@ public class HomePanel extends JPanel {
 	}
 
 	private void initButtons() {
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
+		
+		//add button
+		buttonsPanel.add(connectionNormalButton);
 		
 	}
 }

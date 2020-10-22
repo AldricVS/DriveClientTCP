@@ -11,14 +11,14 @@ import gui.MainWindow;
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  */
-public class EmployeListPanel extends JPanel {
+public class EmployeeListPanel extends JPanel {
 
 	private MainWindow context;
 	
 	/**
 	 * 
 	 */
-	public EmployeListPanel(MainWindow context) {
+	public EmployeeListPanel(MainWindow context) {
 		this.context = context;
 	}
 

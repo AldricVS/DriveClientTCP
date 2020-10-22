@@ -7,13 +7,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
-import gui.subwindows.employee_list.EmployeListPanel;
-import gui.subwindows.home.HomePanel;
+import gui.subwindows.employee_list.EmployeeListPanel;
+import gui.subwindows.home.ConnexionPanel;
 import gui.subwindows.menu.MenuPanel;
 import gui.subwindows.order_list.OrderListPanel;
 import gui.subwindows.product_list.ProductListPanel;
@@ -42,11 +43,11 @@ public class MainWindow extends JFrame {
 	/**
 	 * All subwindows of the app
 	 */
-	HomePanel homePanel = new HomePanel(context);
+	ConnexionPanel connexionPanel = new ConnexionPanel(context);
 	MenuPanel menuPanel = new MenuPanel(context);
 	ProductListPanel productListPanel = new ProductListPanel(context);
 	OrderListPanel orderListPanel = new OrderListPanel(context);
-	EmployeListPanel employeListPanel = new EmployeListPanel(context);
+	EmployeeListPanel employeeListPanel = new EmployeeListPanel(context);
 
 	public MainWindow() {
 		super("Drivepicerie");
@@ -70,17 +71,18 @@ public class MainWindow extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		//TODO : put DO_NOTHING_ON_CLOSE when window close event finished 
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowCloseListener());
 		setResizable(false);
 	}
 
 	private void addSubWindows() {
-		contentPane.add(homePanel, WindowName.HOME.name());
+		contentPane.add(connexionPanel, WindowName.HOME.name());
 		contentPane.add(menuPanel, WindowName.MENU.name());
 		contentPane.add(productListPanel, WindowName.PRODUCT_LIST.name());
 		contentPane.add(orderListPanel, WindowName.ORDER_LIST.name());
-		contentPane.add(employeListPanel, WindowName.EMPLOYEE_LIST.name());
+		contentPane.add(employeeListPanel, WindowName.EMPLOYEE_LIST.name());
 		
 		//focus on the home panel
 		cardLayout.show(contentPane, WindowName.HOME.name());
@@ -89,11 +91,11 @@ public class MainWindow extends JFrame {
 	class WindowCloseListener extends WindowAdapter {
 		@Override
 		public void windowClosing(WindowEvent windowEvent) {
-			/*
-			 * TODO : add a confirm pop-up and if click yes AND client authenticated, send a
-			 * disconnect message.
-			 */
-
+			int result = JOptionPane.showConfirmDialog(null, "Voulez-vous quitter ?", "Fermeture du programme...", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				//TODO: Disconnect if auth
+				System.exit(0);
+			}
 		}
 	}
 }

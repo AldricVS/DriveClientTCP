@@ -1,7 +1,7 @@
 package gui;
 
 public enum WindowName {
-	HOME,
+	LOGIN,
 	MENU,
 	PRODUCT_LIST,
 	ORDER_LIST,

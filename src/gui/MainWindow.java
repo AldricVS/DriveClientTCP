@@ -57,6 +57,7 @@ public class MainWindow extends JFrame {
 	}
 
 	private void init() {
+		
 		// set the global UI look like the others windows on the current OS
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -64,28 +65,26 @@ public class MainWindow extends JFrame {
 				| UnsupportedLookAndFeelException e) {
 			logger.warn("Cannot change UI look and feel : " + e.getMessage());
 		}
-
+		
 		setPreferredSize(MAIN_DIMENSION);
 		setLayout(cardLayout);
 		setVisible(true);
 		pack();
 		setLocationRelativeTo(null);
-		//TODO : put DO_NOTHING_ON_CLOSE when window close event finished 
-		//setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowCloseListener());
 		setResizable(false);
 	}
 
 	private void addSubWindows() {
-		contentPane.add(connexionPanel, WindowName.HOME.name());
+		contentPane.add(connexionPanel, WindowName.LOGIN.name());
 		contentPane.add(menuPanel, WindowName.MENU.name());
 		contentPane.add(productListPanel, WindowName.PRODUCT_LIST.name());
 		contentPane.add(orderListPanel, WindowName.ORDER_LIST.name());
 		contentPane.add(employeeListPanel, WindowName.EMPLOYEE_LIST.name());
 		
 		//focus on the home panel
-		cardLayout.show(contentPane, WindowName.HOME.name());
+		cardLayout.show(contentPane, WindowName.LOGIN.name());
 	}
 
 	class WindowCloseListener extends WindowAdapter {

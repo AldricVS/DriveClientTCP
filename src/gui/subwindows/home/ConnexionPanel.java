@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,6 +20,7 @@ import javax.swing.SwingConstants;
 
 import gui.GuiConstants;
 import gui.MainWindow;
+import gui.WindowName;
 
 /**
  * First panel of the application. Ask for user to connect with login and password.
@@ -110,9 +113,19 @@ public class ConnexionPanel extends JPanel {
 		connectionNormalButton.setAlignmentX(CENTER_ALIGNMENT);
 		connectionNormalButton.setPreferredSize(BUTTON_SIZE);
 		
+		//handle connection
+		connectionNormalButton.addActionListener(new ActionConnection());
+		
 		//add button
 		buttonsPanel.add(Box.createRigidArea(FILLER));
 		buttonsPanel.add(connectionNormalButton);
-		
+	}
+	
+	class ActionConnection implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//Lancer la connexion
+			//Pour le moment, passer au menu
+			context.changeWindow(WindowName.MENU.name());
+		}
 	}
 }

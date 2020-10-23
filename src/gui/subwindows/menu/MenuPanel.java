@@ -61,6 +61,9 @@ public class MenuPanel extends JPanel {
 		initTitle();
 		initActionProduit();
 		initDeconnexion();
+		
+		add(titlePanel);
+		add(buttonsPanel);
 	}
 	
 	private void initAsAdmin() {
@@ -82,6 +85,28 @@ public class MenuPanel extends JPanel {
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
 		
 		GridBagConstraints c = new GridBagConstraints();
+		c.weightx = 0.4;
+		c.weighty = 0.2;
+		
+		//Product List
+		c.gridx = 0;
+		c.gridy = 0;
+		buttonsPanel.add(productListButton, c);
+		
+		//Add Product
+		c.gridx = 2;
+		c.gridy = 0;
+		buttonsPanel.add(addProductButton, c);
+		
+		//Order List
+		c.gridx = 1;
+		c.gridy = 1;
+		buttonsPanel.add(orderListButton, c);
+		
+		//Disconnect
+		c.gridx = 1;
+		c.gridy = 2;
+		buttonsPanel.add(disconnectButton, c);
 		
 	}
 	

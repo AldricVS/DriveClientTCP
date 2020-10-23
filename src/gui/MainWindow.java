@@ -97,4 +97,9 @@ public class MainWindow extends JFrame {
 			}
 		}
 	}
+
+	public void changeWindow(String name) {
+		// Change current screen to desired one
+		cardLayout.show(contentPane, name);
+	}
 }

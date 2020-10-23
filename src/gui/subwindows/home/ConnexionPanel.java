@@ -41,8 +41,8 @@ public class ConnexionPanel extends JPanel {
 	/**
 	 * TEXT FIELDS
 	 */
-	private final Dimension FIELDS_DIMENSION = new Dimension(GuiConstants.WIDTH / 3, GuiConstants.HEIGHT / 3);
-	private final Dimension TEXTFIELD_DIMENSION = new Dimension(FIELDS_DIMENSION.width / 3, FIELDS_DIMENSION.height / 8);
+	private final Dimension FIELDS_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 3);
+	private final Dimension TEXTFIELD_DIMENSION = new Dimension(FIELDS_DIMENSION.width / 5, FIELDS_DIMENSION.height / 10);
 	private JPanel fieldsPanel = new JPanel();
 	private JLabel loginLabel = new JLabel("Identifiant", SwingConstants.CENTER);
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
@@ -52,11 +52,10 @@ public class ConnexionPanel extends JPanel {
 	/**
 	 * BUTTONS
 	 */
-	private final Dimension BUTTONS_DIMENSION = new Dimension(GuiConstants.WIDTH / 5, GuiConstants.HEIGHT / 4);
-	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 3, BUTTONS_DIMENSION.height / 3);
+	private final Dimension BUTTONS_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 4);
+	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 8, BUTTONS_DIMENSION.height / 4);
 	private JPanel buttonsPanel = new JPanel();
-	private JButton connectionNormalButton = new JButton("Connexion");
-	//private JButton connectionAdminButton = new JButton("Connexion en tant qu'admninistrateur");
+	private JButton connectionButton = new JButton("Connexion");
 
 	private final Dimension FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	
@@ -103,6 +102,7 @@ public class ConnexionPanel extends JPanel {
 		fieldsPanel.add(Box.createRigidArea(FILLER));
 		fieldsPanel.add(passwordLabel);
 		fieldsPanel.add(passwordTextArea);
+		fieldsPanel.add(Box.createRigidArea(FILLER));
 	}
 
 	private void initButtons() {
@@ -110,15 +110,14 @@ public class ConnexionPanel extends JPanel {
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
 
 		//alignement
-		connectionNormalButton.setAlignmentX(CENTER_ALIGNMENT);
-		connectionNormalButton.setPreferredSize(BUTTON_SIZE);
+		connectionButton.setAlignmentX(CENTER_ALIGNMENT);
+		connectionButton.setMaximumSize(BUTTON_SIZE);
 		
 		//handle connection
-		connectionNormalButton.addActionListener(new ActionConnection());
+		connectionButton.addActionListener(new ActionConnection());
 		
 		//add button
-		buttonsPanel.add(Box.createRigidArea(FILLER));
-		buttonsPanel.add(connectionNormalButton);
+		buttonsPanel.add(connectionButton);
 	}
 	
 	class ActionConnection implements ActionListener {
@@ -128,4 +127,5 @@ public class ConnexionPanel extends JPanel {
 			context.changeWindow(WindowName.MENU.name());
 		}
 	}
+	
 }

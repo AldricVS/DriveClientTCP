@@ -97,9 +97,12 @@ public class MainWindow extends JFrame {
 			}
 		}
 	}
-
+	
+	/**
+	 * Change the current window displayed to the one specifed
+	 * @param name The {@link gui.WindowName WindowName} of the window desired
+	 */
 	public void changeWindow(String name) {
-		// Change current screen to desired one
 		cardLayout.show(contentPane, name);
 	}
 }

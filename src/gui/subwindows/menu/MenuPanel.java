@@ -46,21 +46,27 @@ public class MenuPanel extends JPanel {
 	 * ADMIN
 	 * je les note ici, mais je pense qu'on devrait les créer uniquement si on est admin reconnu
 	 */
-	private JButton employeeListButton = new JButton("Ajouter un nouveau produit");
-	private JButton addEmployeeButton = new JButton("Voir la liste des commandes");
+	private JButton employeeListButton = new JButton("Voir la liste des Employes");
+	private JButton addEmployeeButton = new JButton("Ajouter un nouvel Employe");
 	
 	
 	public MenuPanel(MainWindow context) {
 		this.context = context;
-		//Si admin, une autre méthode de création ?
-		initAsEmployee();
-		//initAsAdmin();
+		//Les boutons seront placés toujours de la même manière
+		buttonsPanel.setLayout(new GridBagLayout());
+		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
+		
+		//Si on est administrateur, on a une méthode en plus à faire
+		//initAsEmployee();
+		initAsAdmin();
 	}
+	
+	//Note: On peut faire la vérification si on est administrateur directement dans initAsEmployee,
+	//et éxécuter initGestionMagasin() si vérifié
 	
 	private void initAsEmployee() {
 		initTitle();
 		initActionProduit();
-		initDeconnexion();
 		
 		add(titlePanel);
 		add(buttonsPanel);
@@ -70,7 +76,9 @@ public class MenuPanel extends JPanel {
 		initTitle();
 		initActionProduit();
 		initGestionMagasin();
-		initDeconnexion();
+		
+		add(titlePanel);
+		add(buttonsPanel);
 	}
 
 	private void initTitle() {
@@ -81,9 +89,6 @@ public class MenuPanel extends JPanel {
 	}
 	
 	private void initActionProduit() {
-		buttonsPanel.setLayout(new GridBagLayout());
-		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
-		
 		GridBagConstraints c = new GridBagConstraints();
 		c.weightx = 0.4;
 		c.weighty = 0.2;
@@ -103,18 +108,27 @@ public class MenuPanel extends JPanel {
 		c.gridy = 1;
 		buttonsPanel.add(orderListButton, c);
 		
+
 		//Disconnect
 		c.gridx = 1;
-		c.gridy = 2;
+		c.gridy = 3;
 		buttonsPanel.add(disconnectButton, c);
-		
 	}
 	
 	private void initGestionMagasin() {
+		GridBagConstraints c = new GridBagConstraints();
+		c.weightx = 0.4;
+		c.weighty = 0.2;
 		
-	}
-	
-	private void initDeconnexion() {
+		//Employee List
+		c.gridx = 0;
+		c.gridy = 2;
+		buttonsPanel.add(employeeListButton, c);
+		
+		//Add Employee
+		c.gridx = 2;
+		c.gridy = 2;
+		buttonsPanel.add(addEmployeeButton, c);
 		
 	}
 	

@@ -56,6 +56,7 @@ public class ConnexionPanel extends JPanel {
 	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 8, BUTTONS_DIMENSION.height / 4);
 	private JPanel buttonsPanel = new JPanel();
 	private JButton connectionButton = new JButton("Connexion");
+	private JButton connectionAdminButton = new JButton("Connexion en tant qu'Administrateur");
 
 	private final Dimension FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	
@@ -113,16 +114,39 @@ public class ConnexionPanel extends JPanel {
 		connectionButton.setAlignmentX(CENTER_ALIGNMENT);
 		connectionButton.setMaximumSize(BUTTON_SIZE);
 		
+		connectionAdminButton.setAlignmentX(CENTER_ALIGNMENT);
+		connectionAdminButton.setMaximumSize(BUTTON_SIZE);
+		
 		//handle connection
 		connectionButton.addActionListener(new ActionConnection());
+		connectionAdminButton.addActionListener(new ActionAdminConnection());
 		
 		//add button
 		buttonsPanel.add(connectionButton);
+		buttonsPanel.add(connectionAdminButton);
 	}
 	
 	class ActionConnection implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//Lancer la connexion
+				//Récupérer combo Id / mdp
+			String Id = loginTextArea.getText();
+			String Mdp = passwordTextArea.getText();
+				//ServerConnectionHandler
+				//context.getServerConnectionHandler();
+			//Pour le moment, passer au menu
+			context.changeWindow(WindowName.MENU.name());
+		}
+	}
+	
+	class ActionAdminConnection implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//Lancer la connexion
+				//Récupérer combo Id / mdp
+			String Id = loginTextArea.getText();
+			String Mdp = passwordTextArea.getText();
+				//ServerConnectionHandler
+			context.launchConnection(Id, Mdp);
 			//Pour le moment, passer au menu
 			context.changeWindow(WindowName.MENU.name());
 		}

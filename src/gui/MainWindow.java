@@ -5,6 +5,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -13,24 +16,29 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
+import data.Protocol;
+import data.enums.ActionCodes;
 import gui.subwindows.employee_list.EmployeeListPanel;
 import gui.subwindows.home.ConnexionPanel;
 import gui.subwindows.menu.MenuPanel;
 import gui.subwindows.order_list.OrderListPanel;
 import gui.subwindows.product_list.ProductListPanel;
 import logger.LoggerUtility;
+import process.connection.ServerConnectionHandler;
 
 /**
  * The main window that user will interact with during all process. This window
  * contains all pages used for this app.
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
+ * @author Maxence Hennekein
  */
 public class MainWindow extends JFrame {
 	private static Logger logger = LoggerUtility.getLogger(MainWindow.class, LoggerUtility.LOG_PREFERENCE);
 
 	private MainWindow context = this;
 	private Container contentPane;
+	private ServerConnectionHandler ServerConnectHandler;
 	
 	public static final Dimension MAIN_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT);
 
@@ -93,6 +101,7 @@ public class MainWindow extends JFrame {
 			int result = JOptionPane.showConfirmDialog(null, "Voulez-vous quitter ?", "Fermeture du programme...", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				//TODO: Disconnect if auth
+				//getServerConnectionHandler().closeConnection();
 				System.exit(0);
 			}
 		}
@@ -104,5 +113,41 @@ public class MainWindow extends JFrame {
 	 */
 	public void changeWindow(String name) {
 		cardLayout.show(contentPane, name);
+	}
+	
+	/**
+	 * get connection handler
+	 * @return {@link process.connexion.ServerConnectionHandler ServerConnectionHandler}
+	 */
+	public ServerConnectionHandler getServerConnectionHandler() {
+		if (ServerConnectHandler != null) {
+			return ServerConnectHandler;
+		}
+		return null;
+		//popup si ca marche pas
+	}
+
+	public void launchConnection(String id, String mdp) {
+		try {
+			//default connection
+			ServerConnectHandler = new ServerConnectionHandler("127.0.0.1", 5000);
+			//join id & mdp on a list
+			LinkedList<String> args = new LinkedList<String>();
+				args.add(id);
+				args.add(mdp);
+			//send a protocol
+			Protocol tryConnect = new Protocol(ActionCodes.CONNECTION_ADMIN, args);
+			logger.info(tryConnect.toString());
+			String answer = ServerConnectHandler.sendProtocolMessage(tryConnect);
+			logger.info(answer);
+		}
+		catch (UnknownHostException e) {
+			logger.error("Impossible de joindre l'adresse IP fournit");
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

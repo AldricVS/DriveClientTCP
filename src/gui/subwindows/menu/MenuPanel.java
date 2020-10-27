@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,6 +18,7 @@ import javax.swing.SwingConstants;
 
 import gui.GuiConstants;
 import gui.MainWindow;
+import gui.WindowName;
 
 /**
  * 
@@ -57,8 +60,8 @@ public class MenuPanel extends JPanel {
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
 		
 		//Si on est administrateur, on a une méthode en plus à faire
-		//initAsEmployee();
-		initAsAdmin();
+		initAsEmployee();
+		//initAsAdmin();
 	}
 	
 	//Note: On peut faire la vérification si on est administrateur directement dans initAsEmployee,
@@ -112,6 +115,7 @@ public class MenuPanel extends JPanel {
 		//Disconnect
 		c.gridx = 1;
 		c.gridy = 3;
+		disconnectButton.addActionListener(new ActionDisconnect());
 		buttonsPanel.add(disconnectButton, c);
 	}
 	
@@ -132,4 +136,13 @@ public class MenuPanel extends JPanel {
 		
 	}
 	
+	class ActionDisconnect implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//Lancer la connexion
+			//ServerConnectionHandler
+				//context.disconnect();
+			//revenir au login
+			context.changeWindow(WindowName.LOGIN.name());
+		}
+	}
 }

@@ -124,19 +124,34 @@ public class MainWindow extends JFrame {
 			return ServerConnectHandler;
 		}
 		return null;
-		//popup si ca marche pas
 	}
-
-	public void launchConnection(String id, String mdp) {
+	
+	/**
+	 * Start the connection with the {@link process.connection.ServerConnectionHandler Server} using given Id & password
+	 * @param id ID of Employee
+	 * @param mdp password of Employee
+	 * @param asAdmin if you want to try the connection as an administrator
+	 */
+	public void launchConnection(String id, String mdp, boolean asAdmin) {
 		try {
 			//default connection
+				//je ne pense pas que l'initialisation de la connexion doit réelement se faire ici
+					//par exemple, si on doit changer l'ip via un fichier ou autre
+				//je vais la deplacer dans une methode de serverHandler
+				//en attendant, on se connecte localement
 			ServerConnectHandler = new ServerConnectionHandler("127.0.0.1", 5000);
 			//join id & mdp on a list
 			LinkedList<String> args = new LinkedList<String>();
 				args.add(id);
 				args.add(mdp);
 			//send a protocol
-			Protocol tryConnect = new Protocol(ActionCodes.CONNECTION_ADMIN, args);
+			Protocol tryConnect;
+			if (asAdmin) {
+				tryConnect = new Protocol(ActionCodes.CONNECTION_ADMIN, args);
+			}
+			else {
+				tryConnect = new Protocol(ActionCodes.CONNECTION_NORMAL, args);
+			}
 			logger.info(tryConnect.toString());
 			String answer = ServerConnectHandler.sendProtocolMessage(tryConnect);
 			logger.info(answer);

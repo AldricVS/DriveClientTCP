@@ -39,6 +39,7 @@ public class MenuPanel extends JPanel {
 	 * Employe
 	 */
 	private final Dimension BUTTONS_DIMENSION = new Dimension(3 * GuiConstants.WIDTH / 4, 4 * GuiConstants.HEIGHT / 6);
+	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 4, BUTTONS_DIMENSION.height / 8);
 	private JPanel buttonsPanel = new JPanel();
 	private JButton productListButton = new JButton("Afficher la liste des produits");
 	private JButton addProductButton = new JButton("Ajouter un nouveau produit");
@@ -60,8 +61,8 @@ public class MenuPanel extends JPanel {
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
 		
 		//Si on est administrateur, on a une méthode en plus à faire
-		initAsEmployee();
-		//initAsAdmin();
+		//initAsEmployee();
+		initAsAdmin();
 	}
 	
 	//Note: On peut faire la vérification si on est administrateur directement dans initAsEmployee,
@@ -99,22 +100,27 @@ public class MenuPanel extends JPanel {
 		//Product List
 		c.gridx = 0;
 		c.gridy = 0;
+		productListButton.setPreferredSize(BUTTON_SIZE);
+		//productListButton.setMaximumSize(BUTTON_SIZE);
 		buttonsPanel.add(productListButton, c);
 		
 		//Add Product
 		c.gridx = 2;
 		c.gridy = 0;
+		addProductButton.setPreferredSize(BUTTON_SIZE);
 		buttonsPanel.add(addProductButton, c);
 		
 		//Order List
 		c.gridx = 1;
 		c.gridy = 1;
+		orderListButton.setPreferredSize(BUTTON_SIZE);
 		buttonsPanel.add(orderListButton, c);
 		
 
 		//Disconnect
 		c.gridx = 1;
 		c.gridy = 3;
+		disconnectButton.setPreferredSize(BUTTON_SIZE);
 		disconnectButton.addActionListener(new ActionDisconnect());
 		buttonsPanel.add(disconnectButton, c);
 	}
@@ -127,11 +133,13 @@ public class MenuPanel extends JPanel {
 		//Employee List
 		c.gridx = 0;
 		c.gridy = 2;
+		employeeListButton.setPreferredSize(BUTTON_SIZE);
 		buttonsPanel.add(employeeListButton, c);
 		
 		//Add Employee
 		c.gridx = 2;
 		c.gridy = 2;
+		addEmployeeButton.setPreferredSize(BUTTON_SIZE);
 		buttonsPanel.add(addEmployeeButton, c);
 		
 	}

@@ -53,7 +53,7 @@ public class ConnexionPanel extends JPanel {
 	 * BUTTONS
 	 */
 	private final Dimension BUTTONS_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 4);
-	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 8, BUTTONS_DIMENSION.height / 4);
+	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 6, BUTTONS_DIMENSION.height / 4);
 	private JPanel buttonsPanel = new JPanel();
 	private JButton connectionButton = new JButton("Connexion");
 	private JButton connectionAdminButton = new JButton("Connexion en tant qu'Administrateur");
@@ -133,7 +133,7 @@ public class ConnexionPanel extends JPanel {
 			String Id = loginTextArea.getText();
 			String Mdp = passwordTextArea.getText();
 				//ServerConnectionHandler
-				//context.getServerConnectionHandler();
+			context.launchConnection(Id, Mdp, false);
 			//Pour le moment, passer au menu
 			context.changeWindow(WindowName.MENU.name());
 		}
@@ -146,7 +146,7 @@ public class ConnexionPanel extends JPanel {
 			String Id = loginTextArea.getText();
 			String Mdp = passwordTextArea.getText();
 				//ServerConnectionHandler
-			context.launchConnection(Id, Mdp);
+			context.launchConnection(Id, Mdp, true);
 			//Pour le moment, passer au menu
 			context.changeWindow(WindowName.MENU.name());
 		}

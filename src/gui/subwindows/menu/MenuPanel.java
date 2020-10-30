@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package gui.subwindows.menu;
 
 import java.awt.BorderLayout;
@@ -56,30 +54,16 @@ public class MenuPanel extends JPanel {
 	
 	public MenuPanel(MainWindow context) {
 		this.context = context;
+		init();
+	}
+	
+	private void init() {
 		//Les boutons seront placés toujours de la même manière
 		buttonsPanel.setLayout(new GridBagLayout());
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
 		
-		//Si on est administrateur, on a une méthode en plus à faire
-		//initAsEmployee();
-		initAsAdmin();
-	}
-	
-	//Note: On peut faire la vérification si on est administrateur directement dans initAsEmployee,
-	//et éxécuter initGestionMagasin() si vérifié
-	
-	private void initAsEmployee() {
 		initTitle();
 		initActionProduit();
-		
-		add(titlePanel);
-		add(buttonsPanel);
-	}
-	
-	private void initAsAdmin() {
-		initTitle();
-		initActionProduit();
-		initGestionMagasin();
 		
 		add(titlePanel);
 		add(buttonsPanel);
@@ -101,19 +85,21 @@ public class MenuPanel extends JPanel {
 		c.gridx = 0;
 		c.gridy = 0;
 		productListButton.setPreferredSize(BUTTON_SIZE);
-		//productListButton.setMaximumSize(BUTTON_SIZE);
+		productListButton.addActionListener(new ActionGoToProductList());
 		buttonsPanel.add(productListButton, c);
 		
 		//Add Product
 		c.gridx = 2;
 		c.gridy = 0;
 		addProductButton.setPreferredSize(BUTTON_SIZE);
+		addProductButton.addActionListener(new ActionGoToAddProduct());
 		buttonsPanel.add(addProductButton, c);
 		
 		//Order List
 		c.gridx = 1;
 		c.gridy = 1;
 		orderListButton.setPreferredSize(BUTTON_SIZE);
+		orderListButton.addActionListener(new ActionGoToOrderList());
 		buttonsPanel.add(orderListButton, c);
 		
 
@@ -144,13 +130,40 @@ public class MenuPanel extends JPanel {
 		
 	}
 	
+	/**
+	 * Ajoute les boutons de Gestion du Magasin
+	 */
+	public void initAdmin() {
+		initGestionMagasin();
+	}
+	
 	class ActionDisconnect implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//Lancer la connexion
 			//ServerConnectionHandler
-				//context.disconnect();
+				context.disconnect();
 			//revenir au login
 			context.changeWindow(WindowName.LOGIN.name());
+		}
+	}
+	
+	class ActionGoToProductList implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//send protocol to receive productList
+			context.changeWindow(WindowName.PRODUCT_LIST.name());
+		}
+	}
+	
+	class ActionGoToAddProduct implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//pop-up
+		}
+	}
+	
+	class ActionGoToOrderList implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//receive protocol to receive list of order
+			context.changeWindow(WindowName.ORDER_LIST.name());
 		}
 	}
 }

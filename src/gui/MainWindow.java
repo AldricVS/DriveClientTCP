@@ -26,6 +26,7 @@ import gui.subwindows.order_list.OrderListPanel;
 import gui.subwindows.product_list.ProductListPanel;
 import logger.LoggerUtility;
 import process.connection.ServerConnectionHandler;
+import process.protocol.ProtocolExtractor;
 
 /**
  * The main window that user will interact with during all process. This window
@@ -101,7 +102,7 @@ public class MainWindow extends JFrame {
 			int result = JOptionPane.showConfirmDialog(null, "Voulez-vous quitter ?", "Fermeture du programme...", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				//TODO: Disconnect if auth
-				//getServerConnectionHandler().closeConnection();
+				disconnect();
 				System.exit(0);
 			}
 		}
@@ -152,6 +153,33 @@ public class MainWindow extends JFrame {
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		//As administrator, we have some initialization to do
+		if (asAdmin) {
+			menuPanel.initAdmin();
+			//TODO peut-etre déplacer l'init d'employeeList ici
+		}
+	}
+	
+	public void initListProduct() {
+		//protocol asking for the list of product
+		Protocol protocol = new Protocol(ActionCodes.GET_PRODUCT_LIST);
+		try {
+			Protocol answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+			logger.info(answer);
+			ProtocolExtractor extractor = new ProtocolExtractor(answer.toString());
+			logger.info(extractor);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidProtocolException e) {
+			logger.error("Protocol incorrect: ");
+			e.printStackTrace();
+		}
+	}
+	
+	public void disconnect() {
+		if(ServerConnectionHandler.getInstance().isConnected()) {
+			ServerConnectionHandler.getInstance().closeConnection();
 		}
 	}
 }

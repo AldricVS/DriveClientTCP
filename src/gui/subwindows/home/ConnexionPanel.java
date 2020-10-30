@@ -48,6 +48,7 @@ public class ConnexionPanel extends JPanel {
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
 	private JTextField loginTextArea = new JTextField();
 	private JTextField passwordTextArea = new JTextField();
+	private final Dimension FIELDS_FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	
 	/**
 	 * BUTTONS
@@ -57,8 +58,8 @@ public class ConnexionPanel extends JPanel {
 	private JPanel buttonsPanel = new JPanel();
 	private JButton connectionButton = new JButton("Connexion");
 	private JButton connectionAdminButton = new JButton("Connexion en tant qu'Administrateur");
+	private final Dimension BUTTON_FILLER = new Dimension(2 * GuiConstants.WIDTH / 9, BUTTONS_DIMENSION.height);
 
-	private final Dimension FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	
 	public ConnexionPanel(MainWindow context) {
 		this.context = context;
@@ -97,24 +98,26 @@ public class ConnexionPanel extends JPanel {
 		passwordTextArea.setMaximumSize(TEXTFIELD_DIMENSION);
 		
 		//add them to the fields panel
-		fieldsPanel.add(Box.createRigidArea(FILLER));
+		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 		fieldsPanel.add(loginLabel);
 		fieldsPanel.add(loginTextArea);
-		fieldsPanel.add(Box.createRigidArea(FILLER));
+		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 		fieldsPanel.add(passwordLabel);
 		fieldsPanel.add(passwordTextArea);
-		fieldsPanel.add(Box.createRigidArea(FILLER));
+		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 	}
 
 	private void initButtons() {
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
 
 		//alignement
 		connectionButton.setAlignmentX(CENTER_ALIGNMENT);
+		connectionButton.setAlignmentY(CENTER_ALIGNMENT);
 		connectionButton.setMaximumSize(BUTTON_SIZE);
 		
 		connectionAdminButton.setAlignmentX(CENTER_ALIGNMENT);
+		connectionAdminButton.setAlignmentY(CENTER_ALIGNMENT);
 		connectionAdminButton.setMaximumSize(BUTTON_SIZE);
 		
 		//handle connection
@@ -122,8 +125,11 @@ public class ConnexionPanel extends JPanel {
 		connectionAdminButton.addActionListener(new ActionAdminConnection());
 		
 		//add button
+		buttonsPanel.add(Box.createRigidArea(BUTTON_FILLER));
 		buttonsPanel.add(connectionButton);
+		buttonsPanel.add(Box.createRigidArea(BUTTON_FILLER));
 		buttonsPanel.add(connectionAdminButton);
+		buttonsPanel.add(Box.createRigidArea(BUTTON_FILLER));
 	}
 	
 	class ActionConnection implements ActionListener {

@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import data.Protocol;
 import data.enums.ActionCodes;
+import exceptions.InvalidProtocolException;
 import gui.subwindows.employee_list.EmployeeListPanel;
 import gui.subwindows.home.ConnexionPanel;
 import gui.subwindows.menu.MenuPanel;
@@ -38,7 +39,6 @@ public class MainWindow extends JFrame {
 
 	private MainWindow context = this;
 	private Container contentPane;
-	private ServerConnectionHandler ServerConnectHandler;
 	
 	public static final Dimension MAIN_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT);
 
@@ -116,17 +116,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	/**
-	 * get connection handler
-	 * @return {@link process.connexion.ServerConnectionHandler ServerConnectionHandler}
-	 */
-	public ServerConnectionHandler getServerConnectionHandler() {
-		if (ServerConnectHandler != null) {
-			return ServerConnectHandler;
-		}
-		return null;
-	}
-	
-	/**
 	 * Start the connection with the {@link process.connection.ServerConnectionHandler Server} using given Id & password
 	 * @param id ID of Employee
 	 * @param mdp password of Employee
@@ -134,12 +123,8 @@ public class MainWindow extends JFrame {
 	 */
 	public void launchConnection(String id, String mdp, boolean asAdmin) {
 		try {
-			//default connection
-				//je ne pense pas que l'initialisation de la connexion doit réelement se faire ici
-					//par exemple, si on doit changer l'ip via un fichier ou autre
-				//je vais la deplacer dans une methode de serverHandler
-				//en attendant, on se connecte localement
-			ServerConnectHandler = new ServerConnectionHandler("127.0.0.1", 5000);
+			//start connection with the server
+			ServerConnectionHandler.getInstance().initConnection();
 			//join id & mdp on a list
 			LinkedList<String> args = new LinkedList<String>();
 				args.add(id);
@@ -153,11 +138,15 @@ public class MainWindow extends JFrame {
 				tryConnect = new Protocol(ActionCodes.CONNECTION_NORMAL, args);
 			}
 			logger.info(tryConnect.toString());
-			String answer = ServerConnectHandler.sendProtocolMessage(tryConnect);
+			Protocol answer = ServerConnectionHandler.getInstance().sendProtocolMessage(tryConnect);
 			logger.info(answer);
 		}
 		catch (UnknownHostException e) {
 			logger.error("Impossible de joindre l'adresse IP fournit");
+			e.printStackTrace();
+		}
+		catch (InvalidProtocolException e) {
+			logger.error("Erreur dans la lecture du protocole");
 			e.printStackTrace();
 		}
 		catch (IOException e) {

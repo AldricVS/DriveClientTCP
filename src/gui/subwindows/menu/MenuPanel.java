@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import gui.GuiConstants;
@@ -46,7 +48,6 @@ public class MenuPanel extends JPanel {
 	
 	/**
 	 * ADMIN
-	 * je les note ici, mais je pense qu'on devrait les créer uniquement si on est admin reconnu
 	 */
 	private JButton employeeListButton = new JButton("Voir la liste des Employes");
 	private JButton addEmployeeButton = new JButton("Ajouter un nouvel Employe");
@@ -92,7 +93,7 @@ public class MenuPanel extends JPanel {
 		c.gridx = 2;
 		c.gridy = 0;
 		addProductButton.setPreferredSize(BUTTON_SIZE);
-		addProductButton.addActionListener(new ActionGoToAddProduct());
+		addProductButton.addActionListener(new ActionAddProduct());
 		buttonsPanel.add(addProductButton, c);
 		
 		//Order List
@@ -154,9 +155,49 @@ public class MenuPanel extends JPanel {
 		}
 	}
 	
-	class ActionGoToAddProduct implements ActionListener {
+	class ActionAddProduct implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//pop-up
+			JPanel addProductPane = new JPanel();
+			addProductPane.setLayout(new GridBagLayout());
+			GridBagConstraints c = new GridBagConstraints();
+			c.weightx = 0.2;
+			c.weighty = 0.1;
+			
+			//Ajout des TextFields
+			c.gridx = 0;
+			c.gridy = 0;
+			addProductPane.add(new JLabel("Nom du Produit"), c);
+			
+			c.gridx = 0;
+			c.gridy = 1;
+			addProductPane.add(new JLabel("Prix du Produit"), c);
+			
+			c.gridx = 0;
+			c.gridy = 2;
+			addProductPane.add(new JLabel("Quantité du Produit"), c);
+			
+			
+			//Ajout des textArea
+			c.weightx = 3;
+			
+			c.gridx = 1;
+			c.gridy = 0;
+			addProductPane.add(new JTextField(20), c);
+			
+			c.gridx = 1;
+			c.gridy = 1;
+			addProductPane.add(new JTextField(20), c);
+			
+			c.gridx = 1;
+			c.gridy = 2;
+			addProductPane.add(new JTextField(20), c);
+			
+			
+			
+			
+			
+			JOptionPane.showOptionDialog(null, addProductPane, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		}
 	}
 	

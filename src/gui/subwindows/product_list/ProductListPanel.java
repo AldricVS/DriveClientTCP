@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -17,13 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import data.Product;
-import data.Protocol;
-import data.enums.ActionCodes;
-import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
-import process.connection.ServerConnectionHandler;
 
 /**
  * 

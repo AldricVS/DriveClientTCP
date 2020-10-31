@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -161,8 +162,9 @@ public class MenuPanel extends JPanel {
 			JPanel addProductPane = new JPanel();
 			addProductPane.setLayout(new GridBagLayout());
 			GridBagConstraints c = new GridBagConstraints();
-			c.weightx = 0.2;
-			c.weighty = 0.1;
+			//c.weightx = 2;
+			//c.weighty = 3;
+			c.insets = new Insets(5, 5, 5, 5);
 			
 			//Ajout des TextFields
 			c.gridx = 0;
@@ -179,25 +181,25 @@ public class MenuPanel extends JPanel {
 			
 			
 			//Ajout des textArea
-			c.weightx = 3;
+			c.gridwidth = 2;
 			
 			c.gridx = 1;
 			c.gridy = 0;
-			addProductPane.add(new JTextField(20), c);
+			addProductPane.add(new JTextField(30), c);
 			
 			c.gridx = 1;
 			c.gridy = 1;
-			addProductPane.add(new JTextField(20), c);
+			addProductPane.add(new JTextField(30), c);
 			
 			c.gridx = 1;
 			c.gridy = 2;
-			addProductPane.add(new JTextField(20), c);
+			addProductPane.add(new JTextField(30), c);
 			
 			
 			
+			String[] options = {"Ajouter", "Annuler"};
 			
-			
-			JOptionPane.showOptionDialog(null, addProductPane, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+			JOptionPane.showOptionDialog(null, addProductPane, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		}
 	}
 	

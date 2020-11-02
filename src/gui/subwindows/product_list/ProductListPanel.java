@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,6 +20,7 @@ import data.Product;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.subwindows.popup_window.addProductPanel;
 
 /**
  * 
@@ -39,8 +41,18 @@ private MainWindow context;
      * SlideBar
      */
     private final Dimension LIST_DIMENSION = new Dimension(4 * GuiConstants.WIDTH / 5, 5 * GuiConstants.HEIGHT / 9);
-    private JScrollPane listPanel = new JScrollPane();
-    private JList<Product> productList;
+    private JScrollPane listScrollPanel;
+    private JList<Product> productJList;
+    
+    //test seulement, créer quelques produits pour essayer l'affichage
+    private BigDecimal nbr1 = new BigDecimal(5);
+    private Product product1 = new Product("Caillou", 5, nbr1);
+    private BigDecimal nbr2 = new BigDecimal(19.5);
+    private Product product2 = new Product("Rocher", 2, nbr2);
+    private BigDecimal nbr3 = new BigDecimal(0.25);
+    private Product product3 = new Product("Pierre", 50, nbr3);
+    //list de product
+    private Product[] productListTest;
     
     /**
      * Button
@@ -55,17 +67,17 @@ private MainWindow context;
         this.context = context;
         init();
     }
-    
-    private void init() {
+
+	private void init() {
 		setLayout(new BorderLayout());
 		
 		initTitle();
 		//init list doit être fait après récupération de la liste de produit par le serveur
-		//initList();
+		initList();
 		initButtons();
 		
 		add(titlePanel, BorderLayout.NORTH);
-		//add(listPanel, BorderLayout.CENTER);
+		add(listScrollPanel, BorderLayout.CENTER);
 		add(buttonsPanel, BorderLayout.SOUTH);
 	}
     
@@ -77,11 +89,20 @@ private MainWindow context;
 	}
 	
 	private void initList() {
-		//j'attends les methodes pour recup la la liste depuis le serveur
+    	int size = 3;
+		productListTest = new Product[size];
+		productListTest[0] = product1;
+		productListTest[1] = product2;
+		productListTest[2] = product3;
+			//je rempli manuel, mais il faut le faire autrement
+			// -> changer JList pour contenir les productPanel, qui vont gérer l'affichage
 		
-		//productList.setLayoutOrientation(JList.VERTICAL);
-		//productList.setVisibleRowCount(-1);
-		//listPanel.add(productList);
+    	productJList = new JList<Product>(productListTest);
+		productJList.setLayoutOrientation(JList.VERTICAL);
+		
+		listScrollPanel = new JScrollPane(productJList);
+		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 	
 	
@@ -95,12 +116,27 @@ private MainWindow context;
 		returnButton.setAlignmentX(CENTER_ALIGNMENT);
 		returnButton.setMaximumSize(BUTTON_SIZE);
 		
-		//addProductButton.addActionListener(new ActionAddProduct());
+		addProductButton.addActionListener(new ActionAddProduct());
 		returnButton.addActionListener(new ActionRetour());
 		
 		//add button
 		buttonsPanel.add(addProductButton);
 		buttonsPanel.add(returnButton);
+	}
+	
+	class ActionAddProduct implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//pop-up
+			addProductPanel addProductPopup = new addProductPanel();
+			addProductPopup.getPopup();
+			String productName = addProductPopup.getNameProduct();
+			String productPrice = addProductPopup.getPriceProduct();
+			String productQuantity = addProductPopup.getQuantityProduct();
+			//start protocol to add new product
+				//when it ends, change to product list
+				context.changeWindow(WindowName.PRODUCT_LIST.name());
+			//redraw ?
+		}
 	}
 	
     class ActionRetour implements ActionListener {

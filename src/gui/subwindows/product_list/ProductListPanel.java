@@ -49,13 +49,13 @@ private MainWindow context;
     private JPanel productListPanel;
     
     //test seulement, créer quelques produits pour essayer l'affichage
-    private Product product1 = new Product("Caillou", 5, new BigDecimal(5));
-    private Product product2 = new Product("Rocher", 2, new BigDecimal(19.5));
-    private Product product3 = new Product("Pierre", 50, new BigDecimal(0.25));
-    private Product product4 = new Product("Arbre", 50, new BigDecimal(0.25));
-    private Product product5 = new Product("Branche", 50, new BigDecimal(0.25));
-    private Product product6 = new Product("Feuille", 50, new BigDecimal(0.25));
-    private Product product7 = new Product("Eau", 50, new BigDecimal(0.25));
+    private Product product1 = new Product("Caillou", 5, new BigDecimal(5), null);
+    private Product product2 = new Product("Rocher", 2, new BigDecimal(19.5), null);
+    private Product product3 = new Product("Pierre", 50, new BigDecimal(0.25), null);
+    private Product product4 = new Product("Arbre", 50, new BigDecimal(0.25), null);
+    private Product product5 = new Product("Branche", 50, new BigDecimal(0.25), null);
+    private Product product6 = new Product("Feuille", 50, new BigDecimal(0.25), null);
+    private Product product7 = new Product("Eau", 50, new BigDecimal(0.25), null);
     //list de product
     private Product[] productListTest;
     private int size = 7 * 2;
@@ -143,8 +143,12 @@ private MainWindow context;
 	}
 	
 	private void extractFromProtocol(Protocol protocol) {
-		//extraire un protocol ?
-		ProtocolExtractor ext = new ProtocolExtractor(protocol);
+		// extraire un protocol ? 
+		/* TODO Créer une classe ProductExtractor pour en sortir une liste de Products 
+		 * (vérifier que le nombre d'articles est bon au passage)
+		 * La classe séparera chaque attribut d'un produit avec String#split(';') et mettra les bonnes infos dans un product
+		 */
+		//ProtocolExtractor ext = new ProtocolExtractor(protocol);
 	}
 
 	/**

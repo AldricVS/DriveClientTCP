@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
 import data.Protocol;
+import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
 import logger.LoggerUtility;
 import process.protocol.ProtocolExtractor;
@@ -141,6 +142,23 @@ public class ServerConnectionHandler {
 			logger.error("Connection hasn't started yet");
 		}
 		return null;
+	}
+	
+	/**
+	 * Method in order to disconnect to server safely (we don't wait any answer here)
+	 */
+	public void disconnect() {
+		if (isConnected) {
+			logger.info("Send disconnect message to server.");
+			Protocol protocolDisconnect = new Protocol(ActionCodes.DISCONNECT);
+			//send the message
+			outputFlow.println(protocolDisconnect.toString());
+			
+			closeConnection();
+		}
+		else {
+			logger.error("Connection hasn't started yet");
+		}
 	}
 	
 }

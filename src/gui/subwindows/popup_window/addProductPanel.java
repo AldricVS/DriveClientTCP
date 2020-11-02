@@ -9,9 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import gui.GuiConstants;
 
-public class addProductPanel {
+public class addProductPanel extends JOptionPane{
 	
 	//Panel
 	JPanel addProductPanel = new JPanel();
@@ -68,7 +67,7 @@ public class addProductPanel {
 	}
 	
 	public void getPopup() {
-		JOptionPane.showOptionDialog(null, addProductPanel, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		showOptionDialog(null, addProductPanel, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 	}
 	
 	public String getNameProduct() {

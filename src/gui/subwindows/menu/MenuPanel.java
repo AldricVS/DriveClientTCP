@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.subwindows.popup_window.addProductPanel;
 
 /**
  * 
@@ -159,47 +160,14 @@ public class MenuPanel extends JPanel {
 	class ActionAddProduct implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//pop-up
-			JPanel addProductPane = new JPanel();
-			addProductPane.setLayout(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
-			//c.weightx = 2;
-			//c.weighty = 3;
-			c.insets = new Insets(5, 5, 5, 5);
-			
-			//Ajout des TextFields
-			c.gridx = 0;
-			c.gridy = 0;
-			addProductPane.add(new JLabel("Nom du Produit"), c);
-			
-			c.gridx = 0;
-			c.gridy = 1;
-			addProductPane.add(new JLabel("Prix du Produit"), c);
-			
-			c.gridx = 0;
-			c.gridy = 2;
-			addProductPane.add(new JLabel("Quantité du Produit"), c);
-			
-			
-			//Ajout des textArea
-			c.gridwidth = 2;
-			
-			c.gridx = 1;
-			c.gridy = 0;
-			addProductPane.add(new JTextField(30), c);
-			
-			c.gridx = 1;
-			c.gridy = 1;
-			addProductPane.add(new JTextField(30), c);
-			
-			c.gridx = 1;
-			c.gridy = 2;
-			addProductPane.add(new JTextField(30), c);
-			
-			
-			
-			String[] options = {"Ajouter", "Annuler"};
-			
-			JOptionPane.showOptionDialog(null, addProductPane, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			addProductPanel addProductPopup = new addProductPanel();
+			addProductPopup.getPopup();
+			String productName = addProductPopup.getNameProduct();
+			String productPrice = addProductPopup.getPriceProduct();
+			String productQuantity = addProductPopup.getQuantityProduct();
+			//start protocol to add new product
+			//when it ends, change to product list
+			context.changeWindow(WindowName.PRODUCT_LIST.name());
 		}
 	}
 	

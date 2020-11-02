@@ -6,13 +6,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -20,6 +18,7 @@ import javax.swing.SwingConstants;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.subwindows.popup_window.addEmployeePanel;
 import gui.subwindows.popup_window.addProductPanel;
 
 /**
@@ -179,6 +178,28 @@ public class MenuPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//receive protocol to receive list of order
 			context.changeWindow(WindowName.ORDER_LIST.name());
+		}
+	}
+	class ActionGoToEmployeeList implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+		}
+	}
+	
+	class ActionAddEmployee implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			addEmployeePanel addEmployeePopup = new addEmployeePanel();
+			boolean result;
+			result = addEmployeePopup.getPopup();
+			if (result) {
+				String employeeName = addEmployeePopup.getNameEmployee();
+				String employeePassword = addEmployeePopup.getPassword();
+				String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
+				//start protocol to add new product
+				//when it ends, change to product list
+				context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+			}
+			//has the popup was closed, nothing happen
 		}
 	}
 }

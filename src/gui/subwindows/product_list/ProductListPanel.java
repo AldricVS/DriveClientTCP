@@ -36,7 +36,7 @@ private MainWindow context;
      */
     private final Dimension TITLE_DIMENSION = new Dimension(GuiConstants.WIDTH / 2, 3 * GuiConstants.HEIGHT / 20);
     private JPanel titlePanel = new JPanel();
-    private JLabel titlelabel = new JLabel("Drivepicerie - Accueil", SwingConstants.CENTER);
+    private JLabel titlelabel = new JLabel("Drivepicerie - Liste des produits", SwingConstants.CENTER);
     
     /**
      * SlideBar

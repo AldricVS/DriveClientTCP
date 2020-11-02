@@ -161,13 +161,17 @@ public class MenuPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//pop-up
 			addProductPanel addProductPopup = new addProductPanel();
-			addProductPopup.getPopup();
-			String productName = addProductPopup.getNameProduct();
-			String productPrice = addProductPopup.getPriceProduct();
-			String productQuantity = addProductPopup.getQuantityProduct();
-			//start protocol to add new product
-			//when it ends, change to product list
-			context.changeWindow(WindowName.PRODUCT_LIST.name());
+			boolean result;
+			result = addProductPopup.getPopup();
+			if (result) {
+				String productName = addProductPopup.getNameProduct();
+				String productPrice = addProductPopup.getPriceProduct();
+				String productQuantity = addProductPopup.getQuantityProduct();
+				//start protocol to add new product
+				//when it ends, change to product list
+				context.changeWindow(WindowName.PRODUCT_LIST.name());
+			}
+			//has the popup was closed, nothing happen
 		}
 	}
 	

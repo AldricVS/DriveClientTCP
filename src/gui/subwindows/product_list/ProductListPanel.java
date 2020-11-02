@@ -8,10 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -34,17 +34,17 @@ private MainWindow context;
     /**
      * TITLE 
      */
-    private final Dimension TITLE_DIMENSION = new Dimension(GuiConstants.WIDTH / 2, 3 * GuiConstants.HEIGHT / 18);
+    private final Dimension TITLE_DIMENSION = new Dimension(GuiConstants.WIDTH / 2, 3 * GuiConstants.HEIGHT / 20);
     private JPanel titlePanel = new JPanel();
     private JLabel titlelabel = new JLabel("Drivepicerie - Accueil", SwingConstants.CENTER);
     
     /**
      * SlideBar
      */
-    private final Dimension LIST_DIMENSION = new Dimension(4 * GuiConstants.WIDTH / 5, 10 * GuiConstants.HEIGHT / 18);
-    private final Dimension PRODUCT_LIST_DIMENSION = new Dimension(7 * LIST_DIMENSION.width / 8, LIST_DIMENSION.height / 6);
+    private final Dimension LIST_DIMENSION = new Dimension(4 * GuiConstants.WIDTH / 5, 10 * GuiConstants.HEIGHT / 20);
+    private final Dimension PRODUCT_LIST_DIMENSION = new Dimension(9 * LIST_DIMENSION.width / 10, LIST_DIMENSION.height / 5);
     private JScrollPane listScrollPanel = new JScrollPane();
-    private JPanel productListPanel = new JPanel();
+    private JPanel productListPanel;
     
     //test seulement, créer quelques produits pour essayer l'affichage
     private Product product1 = new Product("Caillou", 5, new BigDecimal(5));
@@ -56,13 +56,14 @@ private MainWindow context;
     private Product product7 = new Product("Eau", 50, new BigDecimal(0.25));
     //list de product
     private Product[] productListTest;
-    private int size = 7;
+    private int size = 7 * 2;
     
     /**
      * Button
      */
-    private final Dimension BUTTONS_DIMENSION = new Dimension(3 * GuiConstants.WIDTH / 4, 5 * GuiConstants.HEIGHT / 18);
-	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 4, BUTTONS_DIMENSION.height / 8);
+    private final Dimension BUTTONS_DIMENSION = new Dimension(3 * GuiConstants.WIDTH / 4, 5 * GuiConstants.HEIGHT / 20);
+	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 3, BUTTONS_DIMENSION.height / 5);
+	private final Dimension BUTTON_FILLER = new Dimension(2 * GuiConstants.WIDTH / 9, BUTTONS_DIMENSION.height);
     private JPanel buttonsPanel = new JPanel();
     private JButton addProductButton = new JButton("Ajouter un nouveau produit");
     private JButton returnButton = new JButton("Retour");
@@ -104,19 +105,29 @@ private MainWindow context;
 		productListTest[4] = product5;
 		productListTest[5] = product6;
 		productListTest[6] = product7;
+		
+		productListTest[7] = product1;
+		productListTest[8] = product2;
+		productListTest[9] = product3;
+		productListTest[10] = product4;
+		productListTest[11] = product5;
+		productListTest[12] = product6;
+		productListTest[13] = product7;
 			//je rempli manuelement, mais il faut le faire autrement
 			// -> changer JList pour contenir les productPanel, qui vont gérer l'affichage
 	}
 	
 	private void initList() {
 		/*
-		 * Normalement dès lors qu'on accède à la page,
+		 * Normalement lors de chaque accès à la page,
 		 * mais pour le moment on utilise une liste préfaite
 		 */
 		initTest();
 			//On transforme notre liste de produit en affichage
+		productListPanel = new JPanel();
 		productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
-		productListPanel.setPreferredSize(LIST_DIMENSION);
+		//productListPanel.setPreferredSize(LIST_DIMENSION);
+		productListPanel.setMinimumSize(LIST_DIMENSION);
 		initProductPanel(productListTest, size);
 		
 		listScrollPanel.setViewportView(productListPanel);
@@ -150,8 +161,11 @@ private MainWindow context;
 		returnButton.addActionListener(new ActionRetour());
 		
 		//add button
+		buttonsPanel.add(Box.createRigidArea(BUTTON_FILLER));
 		buttonsPanel.add(addProductButton);
+		buttonsPanel.add(Box.createRigidArea(BUTTON_FILLER));
 		buttonsPanel.add(returnButton);
+		buttonsPanel.add(Box.createRigidArea(BUTTON_FILLER));
 	}
 	
 	class ActionAddProduct implements ActionListener {

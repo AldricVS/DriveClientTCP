@@ -66,8 +66,17 @@ public class addProductPanel extends JOptionPane{
 		addProductPanel.add(fieldQuantity, c);
 	}
 	
-	public void getPopup() {
-		showOptionDialog(null, addProductPanel, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+	/**
+	 * 
+	 * @return true if an Element will be added, false if canceled
+	 */
+	public boolean getPopup() {
+		int answer;
+		answer = showOptionDialog(null, addProductPanel, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		if ((answer == JOptionPane.NO_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
+			return false;
+		}
+		return true;
 	}
 	
 	public String getNameProduct() {

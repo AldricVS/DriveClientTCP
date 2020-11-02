@@ -99,6 +99,7 @@ public class ServerConnectionHandler {
 				outputFlow.close();
 				inputFlow.close();
 				socket.close();
+				isConnected = false;
 				return true;
 			}
 			catch (IOException e) {
@@ -124,13 +125,15 @@ public class ServerConnectionHandler {
 			
 			//create the string of the protocol
 			String protocolString = protcol.toString();
+			logger.info(protocolString);
 			
 			//send the message
-			outputFlow.println(protcol.toString());
+			outputFlow.println(protocolString);
 			
 			//wait for recieving the server answer
 			/*#readline throws IOException if cannot read from server*/ 
 			String answer = inputFlow.readLine();
+			logger.info(answer);
 			ProtocolExtractor extractor = new ProtocolExtractor(answer);
 			return extractor.getProtocol();
 		}

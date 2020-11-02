@@ -17,10 +17,12 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import data.Product;
+import data.Protocol;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
 import gui.subwindows.popup_window.addProductPanel;
+import process.protocol.ProtocolExtractor;
 
 /**
  * 
@@ -78,7 +80,7 @@ private MainWindow context;
 		
 		initTitle();
 		//init list doit être fait après récupération de la liste de produit par le serveur
-		initList();
+		//initList();
 		initButtons();
 		
 		add(titlePanel, BorderLayout.NORTH);
@@ -117,24 +119,34 @@ private MainWindow context;
 			// -> changer JList pour contenir les productPanel, qui vont gérer l'affichage
 	}
 	
-	private void initList() {
+	public void initList() {
 		/*
 		 * Normalement lors de chaque accès à la page,
 		 * mais pour le moment on utilise une liste préfaite
 		 */
-		initTest();
-			//On transforme notre liste de produit en affichage
-		productListPanel = new JPanel();
-		productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
-		//productListPanel.setPreferredSize(LIST_DIMENSION);
-		productListPanel.setMinimumSize(LIST_DIMENSION);
-		initProductPanel(productListTest, size);
-		
-		listScrollPanel.setViewportView(productListPanel);
-		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//initTest();
+		Protocol listProduct;
+		listProduct = context.initListProduct();
+		if (listProduct != null) {
+			extractFromProtocol(listProduct);
+				//On transforme notre liste de produit en affichage
+			productListPanel = new JPanel();
+			productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
+			//productListPanel.setPreferredSize(LIST_DIMENSION);
+			productListPanel.setMinimumSize(LIST_DIMENSION);
+			initProductPanel(productListTest, size);
+			
+			listScrollPanel.setViewportView(productListPanel);
+			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		}
 	}
 	
+	private void extractFromProtocol(Protocol protocol) {
+		//extraire un protocol ?
+		ProtocolExtractor ext = new ProtocolExtractor(protocol);
+	}
+
 	/**
 	 * Transform the Product's liste receive to a Panel
 	 * @param productList The Liste of All product

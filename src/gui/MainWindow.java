@@ -161,11 +161,17 @@ public class MainWindow extends JFrame {
 		}
 	}
 	
-	public void initListProduct() {
+	/**
+	 * Ask the server to send the list of all Product
+	 * @return Protocol with the list of all product, null if error
+	 */
+	public Protocol initListProduct() {
 		//protocol asking for the list of product
 		Protocol protocol = new Protocol(ActionCodes.GET_PRODUCT_LIST);
+		logger.info(protocol);
+		Protocol answer = null;
 		try {
-			Protocol answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+			answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
 			logger.info(answer);
 			ProtocolExtractor extractor = new ProtocolExtractor(answer.toString());
 			logger.info(extractor);
@@ -175,10 +181,25 @@ public class MainWindow extends JFrame {
 			logger.error("Protocol incorrect: ");
 			e.printStackTrace();
 		}
+		return answer;
 	}
 	
 	public void disconnect() {
 		if(ServerConnectionHandler.getInstance().isConnected()) {
+			Protocol protocol = new Protocol(ActionCodes.DISCONNECT);
+			logger.info(protocol);
+			Protocol answer = null;
+			try {
+				answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+			} catch (IOException e) {
+				logger.error(answer);
+				e.printStackTrace();
+			} catch (InvalidProtocolException e) {
+				logger.error(protocol);
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				logger.info("Fin de la connexion");
+			}
 			ServerConnectionHandler.getInstance().closeConnection();
 		}
 	}

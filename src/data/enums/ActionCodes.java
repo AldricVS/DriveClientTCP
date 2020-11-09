@@ -20,6 +20,13 @@ public enum ActionCodes {
 	GET_ORDER_LIST("0302"),
 	GET_SPECIFIC_PRDUCT("0303"),
 	GET_SPECIFIC_ORDER("0304"),
+	APPLY_PROMOTION("0501"),
+	REMOVE_PROMOTION("0502"),
+	
+	//Administrator only
+	GET_EMPLOYEE_LIST("0305"),
+	ADD_EMPLOYEE("0401"),
+	REMOVE_EMPLOYEE("0402"),
 	
 	//Code sent by server only
 	ERROR("9991"),

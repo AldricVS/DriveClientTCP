@@ -7,6 +7,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,13 +20,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import org.apache.log4j.Logger;
+
 import data.Product;
 import data.Protocol;
+import data.enums.ActionCodes;
+import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
 import gui.subwindows.popup_window.addProductPanel;
-import process.protocol.ProtocolExtractor;
+import logger.LoggerUtility;
+import process.protocol.ProtocolListExtractor;
 
 /**
  * 
@@ -30,9 +39,10 @@ import process.protocol.ProtocolExtractor;
  * @author Maxence
  */
 public class ProductListPanel extends JPanel {
-
-private MainWindow context;
-    
+	private static Logger logger = LoggerUtility.getLogger(ProductListPanel.class, LoggerUtility.LOG_PREFERENCE);
+	private MainWindow context;
+	private ArrayList<Product> listProduct;
+	
     /**
      * TITLE 
      */
@@ -58,7 +68,10 @@ private MainWindow context;
     private Product product7 = new Product("Eau", 50, new BigDecimal(0.25), null);
     //list de product
     private Product[] productListTest;
-    private int size = 7 * 2;
+    private int size = 7;
+    //liste pour le protocol
+    private List<String> list = new LinkedList<String>();
+    
     
     /**
      * Button
@@ -79,8 +92,6 @@ private MainWindow context;
 		setLayout(new BorderLayout());
 		
 		initTitle();
-		//init list doit être fait après récupération de la liste de produit par le serveur
-		//initList();
 		initButtons();
 		
 		add(titlePanel, BorderLayout.NORTH);
@@ -107,7 +118,7 @@ private MainWindow context;
 		productListTest[4] = product5;
 		productListTest[5] = product6;
 		productListTest[6] = product7;
-		
+		/*
 		productListTest[7] = product1;
 		productListTest[8] = product2;
 		productListTest[9] = product3;
@@ -115,40 +126,55 @@ private MainWindow context;
 		productListTest[11] = product5;
 		productListTest[12] = product6;
 		productListTest[13] = product7;
+		*/
 			//je rempli manuelement, mais il faut le faire autrement
 			// -> changer JList pour contenir les productPanel, qui vont gérer l'affichage
 	}
 	
-	public void initList() {
+	private void initListTest() {
+		list.add(((Integer)size).toString());
+		for (int i = 0; i < size; i++) {
+			list.add(i+";"+productListTest[i].toProtocol());
+		}
+	}
+	
+	public void initList(Protocol protocol) {
 		/*
 		 * Normalement lors de chaque accès à la page,
 		 * mais pour le moment on utilise une liste préfaite
 		 */
-		//initTest();
-		Protocol listProduct;
-		listProduct = context.initListProduct();
-		if (listProduct != null) {
-			extractFromProtocol(listProduct);
+		initTest();
+		initListTest();
+		
+		//Protocol listProduct;
+		//listProduct = context.initListProduct();
+		
+		
+		//if (listProduct != null) {
+			extractFromProtocol(new Protocol(ActionCodes.SUCESS, list));
 				//On transforme notre liste de produit en affichage
 			productListPanel = new JPanel();
 			productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
 			//productListPanel.setPreferredSize(LIST_DIMENSION);
 			productListPanel.setMinimumSize(LIST_DIMENSION);
-			initProductPanel(productListTest, size);
+				initProductPanel(listProduct, size);
 			
 			listScrollPanel.setViewportView(productListPanel);
 			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		}
+		//}
 	}
 	
 	private void extractFromProtocol(Protocol protocol) {
-		// extraire un protocol ? 
 		/* TODO Créer une classe ProductExtractor pour en sortir une liste de Products 
 		 * (vérifier que le nombre d'articles est bon au passage)
-		 * La classe séparera chaque attribut d'un produit avec String#split(';') et mettra les bonnes infos dans un product
 		 */
-		//ProtocolExtractor ext = new ProtocolExtractor(protocol);
+		try {
+			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol.toString());
+			listProduct = extractor.extractProductList();
+		} catch (InvalidProtocolException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -156,9 +182,9 @@ private MainWindow context;
 	 * @param productList The Liste of All product
 	 * @param size the amount of Product
 	 */
-	private void initProductPanel(Product[] productList, int size) {
-		for (int i = 0; i < size; i++) {
-			Product p = productList[i];
+	private void initProductPanel(List<Product> productList, int size) {
+		for (Iterator<Product> i = productList.iterator(); i.hasNext(); ) {
+			Product p = i.next();
 			productListPanel.add(new ProductPanel(p, PRODUCT_LIST_DIMENSION));
 		}
 	}

@@ -1,6 +1,5 @@
 package process.protocol;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import exceptions.InvalidProtocolException;
  * @author Aldric
  */
 public class ProtocolExtractor {
-
 	private String protocolString;
 	private Protocol protocol;
 

@@ -59,4 +59,8 @@ public class Product {
 	public String toString() {
 		return "Product [name=" + name + ", quantity=" + quantity + ", price=" + price + "]";
 	}
+	
+	public String toProtocol() {
+		return name + ";" + quantity + ";" + price + ";" + promotion;
+	}
 }

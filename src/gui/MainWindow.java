@@ -27,6 +27,7 @@ import gui.subwindows.product_list.ProductListPanel;
 import logger.LoggerUtility;
 import process.connection.ServerConnectionHandler;
 import process.protocol.ProtocolExtractor;
+import process.protocol.ProtocolFactory;
 
 /**
  * The main window that user will interact with during all process. This window
@@ -101,7 +102,6 @@ public class MainWindow extends JFrame {
 		public void windowClosing(WindowEvent windowEvent) {
 			int result = JOptionPane.showConfirmDialog(null, "Voulez-vous quitter ?", "Fermeture du programme...", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
-				//TODO: Disconnect if auth
 				disconnect();
 				System.exit(0);
 			}
@@ -121,86 +121,76 @@ public class MainWindow extends JFrame {
 	 * @param id ID of Employee
 	 * @param mdp password of Employee
 	 * @param asAdmin if you want to try the connection as an administrator
+	 * @return true if connection has been done successfully
 	 */
-	public void launchConnection(String id, String mdp, boolean asAdmin) {
+	public boolean launchConnection(String id, String mdp, boolean asAdmin) {
 		try {
 			//start connection with the server
 			ServerConnectionHandler.getInstance().initConnection();
-			//join id & mdp on a list
-			LinkedList<String> args = new LinkedList<String>();
-				args.add(id);
-				args.add(mdp);
 			//send a protocol
 			Protocol tryConnect;
-			if (asAdmin) {
-				tryConnect = new Protocol(ActionCodes.CONNECTION_ADMIN, args);
-			}
-			else {
-				tryConnect = new Protocol(ActionCodes.CONNECTION_NORMAL, args);
-			}
-			logger.info(tryConnect.toString());
+			tryConnect = ProtocolFactory.createConnectionProtocol(id, mdp, asAdmin);
+			
+			logger.info("Connection attempt: " + tryConnect.toString());
 			Protocol answer = ServerConnectionHandler.getInstance().sendProtocolMessage(tryConnect);
-			logger.info(answer);
+			//check if we got a successful actionCode 
+			ProtocolExtractor extractor = new ProtocolExtractor(answer.toString());
+			extractor.assertActionCodeValid(ActionCodes.SUCESS);
+			
+			//As administrator, we have some initialization to do
+			if (asAdmin) {
+				menuPanel.initAdmin();
+			}
+			logger.info("=== CONNECTED ===");
+			return true;
 		}
 		catch (UnknownHostException e) {
 			logger.error("Impossible de joindre l'adresse IP fournit");
-			e.printStackTrace();
 		}
 		catch (InvalidProtocolException e) {
-			logger.error("Erreur dans la lecture du protocole");
-			e.printStackTrace();
+			logger.error("Erreur dans la formulation d'un Protocol");
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//As administrator, we have some initialization to do
-		if (asAdmin) {
-			menuPanel.initAdmin();
-			//TODO peut-etre déplacer l'init d'employeeList ici
-		}
+		//Send a disconnect message to the server
+		disconnect();
+		return false;
 	}
 	
 	/**
 	 * Ask the server to send the list of all Product
-	 * @return Protocol with the list of all product, null if error
+	 * @return Protocol with the list of all product, false if error
 	 */
-	public Protocol initListProduct() {
+	public void initListProduct() {
 		//protocol asking for the list of product
 		Protocol protocol = new Protocol(ActionCodes.GET_PRODUCT_LIST);
 		logger.info(protocol);
 		Protocol answer = null;
+		/*
 		try {
 			answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
 			logger.info(answer);
 			ProtocolExtractor extractor = new ProtocolExtractor(answer.toString());
-			logger.info(extractor);
+			extractor.assertActionCodeValid(ActionCodes.SUCESS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidProtocolException e) {
 			logger.error("Protocol incorrect: ");
 			e.printStackTrace();
 		}
-		return answer;
+		*/
+		productListPanel.initList(answer);
 	}
 	
+	/**
+	 * main method to disconnect, as it will call multiple submethod in other classes
+	 */
 	public void disconnect() {
 		if(ServerConnectionHandler.getInstance().isConnected()) {
-			Protocol protocol = new Protocol(ActionCodes.DISCONNECT);
-			logger.info(protocol);
-			Protocol answer = null;
-			try {
-				answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-			} catch (IOException e) {
-				logger.error(answer);
-				e.printStackTrace();
-			} catch (InvalidProtocolException e) {
-				logger.error(protocol);
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				logger.info("Fin de la connexion");
-			}
-			ServerConnectionHandler.getInstance().closeConnection();
+			menuPanel.disconnectAdmin();
+			ServerConnectionHandler.getInstance().disconnect();
+			logger.info("=== DISCONNECTED ===");
 		}
 	}
 }

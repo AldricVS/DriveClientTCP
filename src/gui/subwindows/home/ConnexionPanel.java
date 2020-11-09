@@ -138,10 +138,12 @@ public class ConnexionPanel extends JPanel {
 				//Récupérer combo Id / mdp
 			String Id = loginTextArea.getText();
 			String Mdp = passwordTextArea.getText();
+			boolean answer;
 				//ServerConnectionHandler
-			context.launchConnection(Id, Mdp, false);
-			//Pour le moment, passer au menu
-			context.changeWindow(WindowName.MENU.name());
+			answer = context.launchConnection(Id, Mdp, false);
+			if (answer) {
+				context.changeWindow(WindowName.MENU.name());
+			}
 		}
 	}
 	
@@ -151,10 +153,12 @@ public class ConnexionPanel extends JPanel {
 				//Récupérer combo Id / mdp
 			String Id = loginTextArea.getText();
 			String Mdp = passwordTextArea.getText();
+			boolean answer;
 				//ServerConnectionHandler
-			context.launchConnection(Id, Mdp, true);
-			//Pour le moment, passer au menu
-			context.changeWindow(WindowName.MENU.name());
+			answer = context.launchConnection(Id, Mdp, true);
+			if (answer) {
+				context.changeWindow(WindowName.MENU.name());
+			}
 		}
 	}
 	

@@ -28,6 +28,7 @@ import gui.subwindows.popup_window.addProductPanel;
 public class MenuPanel extends JPanel {
 
 	private MainWindow context;
+	private boolean asAdmin;
 	
 	/**
 	 * TITLE 
@@ -136,14 +137,26 @@ public class MenuPanel extends JPanel {
 	 * Ajoute les boutons de Gestion du Magasin
 	 */
 	public void initAdmin() {
-		initGestionMagasin();
+		if (!asAdmin) {
+			initGestionMagasin();
+			asAdmin = true;
+		}
+	}
+	
+	/**
+	 * Retire les boutons de Gestion du Magasin
+	 */
+	public void disconnectAdmin() {
+		if (asAdmin) {
+			buttonsPanel.remove(employeeListButton);
+			buttonsPanel.remove(addEmployeeButton);
+			asAdmin = false;
+		}
 	}
 	
 	class ActionDisconnect implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			//Lancer la connexion
-			//ServerConnectionHandler
-				context.disconnect();
+			context.disconnect();
 			//revenir au login
 			context.changeWindow(WindowName.LOGIN.name());
 		}
@@ -152,6 +165,7 @@ public class MenuPanel extends JPanel {
 	class ActionGoToProductList implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//send protocol to receive productList
+			context.initListProduct();
 			context.changeWindow(WindowName.PRODUCT_LIST.name());
 		}
 	}

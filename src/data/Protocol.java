@@ -66,14 +66,24 @@ public class Protocol {
 		options.add(optionString);
 	}
 	
+	//TODO une méthode avec les ... pour pouvoir rajouter autant de paramètre qu'on veut
+	//ce sera de la forme d'un DO WHILE
+	
 	/**
-	 * Add a special option : the data of an article
-	 * @param productName the name of the article
-	 * @param productPrice the price of the article
-	 * @param productQuantity the quantity of the article
+	 * Add an option with two parameters using the formatism described.
+	 * @param optionString two options String to add
 	 */
-	public void appendProduct(String productName, String productPrice, String productQuantity) {
-		String productOption = productName + ";" + productPrice + ";" + productQuantity;
+	public void appendTwoOptions(String optionString1, String optionString2) {
+		String productOption = optionString1 + ";" + optionString2;
+		options.add(productOption);
+	}
+	
+	/**
+	 * Add an option with three parameters separated using a ';'.
+	 * @param optionString three options String to add
+	 */
+	public void appendThreeOptions(String optionString1, String optionString2, String optionString3) {
+		String productOption = optionString1 + ";" + optionString2 + ";" + optionString3;
 		options.add(productOption);
 	}
 	

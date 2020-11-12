@@ -20,13 +20,13 @@ public class Product {
 	private BigDecimal price;
 	private BigDecimal promotion;
 
-	public Product(int idProduct, String name, int quantity, BigDecimal price, BigDecimal promotion) {
+	public Product(int idProduct, String name, BigDecimal price, int quantity, BigDecimal promotion) {
 		this.idProduct = idProduct;
 		this.name = name;
+		this.price = price.round(new MathContext(5, RoundingMode.HALF_UP));
 		this.quantity = quantity;
-		this.price = price.round(new MathContext(1, RoundingMode.HALF_UP));
 		if (promotion != null) {
-			promotion = promotion.round(new MathContext(1, RoundingMode.HALF_UP));
+			promotion = promotion.round(new MathContext(5, RoundingMode.HALF_UP));
 		}
 		this.promotion = promotion;
 	}

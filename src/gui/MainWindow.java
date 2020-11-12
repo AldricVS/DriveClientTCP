@@ -159,31 +159,6 @@ public class MainWindow extends JFrame {
 	}
 	
 	/**
-	 * Ask the server to send the list of all Product
-	 * @return Protocol with the list of all product, false if error
-	 */
-	public void initListProduct() {
-		//protocol asking for the list of product
-		Protocol protocol = new Protocol(ActionCodes.GET_PRODUCT_LIST);
-		logger.info(protocol);
-		Protocol answer = null;
-		/*
-		try {
-			answer = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-			logger.info(answer);
-			ProtocolExtractor extractor = new ProtocolExtractor(answer.toString());
-			extractor.assertActionCodeValid(ActionCodes.SUCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidProtocolException e) {
-			logger.error("Protocol incorrect: ");
-			e.printStackTrace();
-		}
-		*/
-		productListPanel.initList(answer);
-	}
-	
-	/**
 	 * main method to disconnect, as it will call multiple submethod in other classes
 	 */
 	public void disconnect() {
@@ -193,4 +168,17 @@ public class MainWindow extends JFrame {
 			logger.info("=== DISCONNECTED ===");
 		}
 	}
+	
+	public void initProductList(Protocol productList) {
+		productListPanel.initList(productList);
+	}
+
+	public void initListOrder(Protocol orderList) {
+		orderListPanel.initList(orderList);
+	}
+
+	public void initEmployeeList(Protocol employeeList) {
+		//employeeListPanel.initList(employeeList);
+	}
+	
 }

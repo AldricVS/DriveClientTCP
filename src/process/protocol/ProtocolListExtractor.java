@@ -42,7 +42,7 @@ public class ProtocolListExtractor extends ProtocolExtractor {
 				String[] product = Elt.split(";", 5);
 				BigDecimal promotion = (product[4].equals("null")) ? null : new BigDecimal(product[4]);
 				
-				listProduct.add(new Product(Integer.parseInt(product[0]), product[1], Integer.parseInt(product[2]), new BigDecimal(product[3]), promotion));
+				listProduct.add(new Product(Integer.parseInt(product[0]), product[1], new BigDecimal(product[2]), Integer.parseInt(product[3]), promotion));
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException e) {

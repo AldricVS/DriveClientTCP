@@ -58,21 +58,6 @@ public class ProductListPanel extends JPanel {
     private JScrollPane listScrollPanel = new JScrollPane();
     private JPanel productListPanel;
     
-    //test seulement, créer quelques produits pour essayer l'affichage
-    private Product product1 = new Product(1, "Caillou", 5, new BigDecimal(5), new BigDecimal(4.5));
-    private Product product2 = new Product(2, "Rocher", 2, new BigDecimal(19.5), null);
-    private Product product3 = new Product(3, "Pierre", 50, new BigDecimal(0.25), null);
-    private Product product4 = new Product(4, "Arbre", 50, new BigDecimal(0.25), new BigDecimal(0.05));
-    private Product product5 = new Product(5, "Branche", 50, new BigDecimal(0.25), null);
-    private Product product6 = new Product(6, "Feuille", 50, new BigDecimal(0.25), null);
-    private Product product7 = new Product(7, "Eau", 50, new BigDecimal(0.25), null);
-    //list de product
-    private Product[] productListTest;
-    private int size = 7;
-    //liste pour le protocol
-    private List<String> list = new LinkedList<String>();
-    
-    
     /**
      * Button
      */
@@ -106,75 +91,26 @@ public class ProductListPanel extends JPanel {
 		titlePanel.add(titlelabel);
 	}
 	
-	/**
-	 * Liste de produit, uniquement pour des tests (TODO à supprimer)
-	 */
-	private void initTest() {
-		productListTest = new Product[size];
-		productListTest[0] = product1;
-		productListTest[1] = product2;
-		productListTest[2] = product3;
-		productListTest[3] = product4;
-		productListTest[4] = product5;
-		productListTest[5] = product6;
-		productListTest[6] = product7;
-		/*
-		productListTest[7] = product1;
-		productListTest[8] = product2;
-		productListTest[9] = product3;
-		productListTest[10] = product4;
-		productListTest[11] = product5;
-		productListTest[12] = product6;
-		productListTest[13] = product7;
-		*/
-			//je rempli manuelement, mais il faut le faire autrement
-			// -> changer JList pour contenir les productPanel, qui vont gérer l'affichage
-	}
-	
-	private void initListTest() {
-		list.add(((Integer)size).toString());
-		for (int i = 0; i < size; i++) {
-			list.add(i+";"+productListTest[i].toProtocol());
-		}
-	}
-	
 	public void initList(Protocol protocol) {
-		/*
-		 * Normalement lors de chaque accès à la page,
-		 * mais pour le moment on utilise une liste préfaite
-		 */
-		initTest();
-		initListTest();
+		extractFromProtocol(protocol);
 		
-		Protocol listProtocol;
-		//listProduct = context.initListProduct();
-		listProtocol = new Protocol(ActionCodes.SUCESS, list);
-		logger.info(listProtocol.toString());
+		//On transforme notre liste de produit en affichage
+		productListPanel = new JPanel();
+		productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
+		productListPanel.setMinimumSize(LIST_DIMENSION);
+		initProductPanel(listProduct);
 		
-		
-		//if (listProduct != null) {
-			extractFromProtocol(listProtocol);
-				//On transforme notre liste de produit en affichage
-			productListPanel = new JPanel();
-			productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
-			//productListPanel.setPreferredSize(LIST_DIMENSION);
-			productListPanel.setMinimumSize(LIST_DIMENSION);
-				initProductPanel(listProduct, size);
-			
-			listScrollPanel.setViewportView(productListPanel);
-			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		//}
+		listScrollPanel.setViewportView(productListPanel);
+		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 	
 	private void extractFromProtocol(Protocol protocol) {
-		/* TODO Créer une classe ProductExtractor pour en sortir une liste de Products 
-		 * (vérifier que le nombre d'articles est bon au passage)
-		 */
 		try {
 			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol.toString());
 			listProduct = extractor.extractProductList();
 		} catch (InvalidProtocolException e) {
+			logger.error("Erreur dans l'extraction du Protocol");
 			e.printStackTrace();
 		}
 	}
@@ -184,7 +120,7 @@ public class ProductListPanel extends JPanel {
 	 * @param productList The Liste of All product
 	 * @param size the amount of Product
 	 */
-	private void initProductPanel(List<Product> productList, int size) {
+	private void initProductPanel(List<Product> productList) {
 		for (Iterator<Product> i = productList.iterator(); i.hasNext(); ) {
 			Product p = i.next();
 			productListPanel.add(new ProductPanel(p, PRODUCT_LIST_DIMENSION));

@@ -12,11 +12,13 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import data.Protocol;
+import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
@@ -24,6 +26,7 @@ import gui.WindowName;
 import gui.subwindows.popup_window.addEmployeePanel;
 import gui.subwindows.popup_window.addProductPanel;
 import process.connection.ServerConnectionHandler;
+import process.protocol.ProtocolExtractor;
 import process.protocol.ProtocolFactory;
 
 /**
@@ -171,10 +174,20 @@ public class MenuPanel extends JPanel {
 	class ActionGoToProductList implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//send protocol to receive productList
-			context.initListProduct();
+			Protocol protocol = ProtocolFactory.createGetListProductProtocol();
+			Protocol productList = null;
+			try {
+				productList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} catch (InvalidProtocolException ex) {
+				ex.printStackTrace();
+			}
+			context.initProductList(productList);
 			context.changeWindow(WindowName.PRODUCT_LIST.name());
 		}
 	}
+	
 	
 	class ActionAddProduct implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -208,11 +221,31 @@ public class MenuPanel extends JPanel {
 	class ActionGoToOrderList implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			//receive protocol to receive list of order
+			Protocol protocol = ProtocolFactory.createGetListOrderProtocol();
+			Protocol orderList = null;
+			try {
+				orderList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} catch (InvalidProtocolException ex) {
+				ex.printStackTrace();
+			}
+			context.initListOrder(orderList);
 			context.changeWindow(WindowName.ORDER_LIST.name());
 		}
 	}
 	class ActionGoToEmployeeList implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			Protocol protocol = ProtocolFactory.createGetListEmployeeProtocol();
+			Protocol employeeList = null;
+			try {
+				employeeList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			} catch (InvalidProtocolException ex) {
+				ex.printStackTrace();
+			}
+			context.initEmployeeList(employeeList);
 			context.changeWindow(WindowName.EMPLOYEE_LIST.name());
 		}
 	}
@@ -226,9 +259,22 @@ public class MenuPanel extends JPanel {
 				String employeeName = addEmployeePopup.getNameEmployee();
 				String employeePassword = addEmployeePopup.getPassword();
 				String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
-				//start protocol to add new product
-				//when it ends, change to product list
-				context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+				if (employeePassword.equals(employeeConfirmPassword)) {
+					//start protocol to add new product
+					Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
+					try {
+						ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					} catch (InvalidProtocolException ex) {
+						ex.printStackTrace();
+					}
+					//when it ends, change to product list
+					context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+				}
+				else {
+					JOptionPane.showMessageDialog(context, "Validation du Mot de Passe incorrect.", "Erreur", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			//has the popup was closed, nothing happen
 		}

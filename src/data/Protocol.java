@@ -69,12 +69,17 @@ public class Protocol {
 	public void appendOptions(String ... optionString) {
 		String listOptionString = new String();
 		for (String string : optionString) {
-			listOptionString.concat(string.concat(";"));
+			/*
+			if (string.isEmpty()) {
+				string = new String("null");
+			}
+			*/
+			listOptionString = listOptionString.concat(string.concat(";"));
 		}
 		//check if at least one option as been added
 		if (listOptionString.endsWith(";")) {
 			//remove the last ;
-			listOptionString.substring(0, listOptionString.length()-1);
+			listOptionString = listOptionString.substring(0, listOptionString.length()-1);
 			options.add(listOptionString);
 		}
 	}

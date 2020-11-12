@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import data.Order;
 import data.Product;
 import data.Protocol;
 import exceptions.InvalidProtocolException;
@@ -50,5 +51,32 @@ public class ProtocolListExtractor extends ProtocolExtractor {
 		}
 		logger.info("== Fin de la liste des produits ==");
 		return listProduct;
+	}
+	
+	public ArrayList<Order> extractOrderList() throws InvalidProtocolException {
+		Protocol listProtocol = getProtocol();
+		ArrayList<Order> listOrder = new ArrayList<Order>();
+		int max = listProtocol.getOptionsListSize();
+		int taille = Integer.parseInt(listProtocol.getOptionsElement(0));
+		
+		if (max-1 != taille) {
+			throw new InvalidProtocolException("Le nombre de Commande recu ne correspond pas a celui transmit");
+		}
+		
+		logger.info("== Listage des "+taille+" commandes recus ==");
+		try {
+			for (int i = 1; i < max; i++) {
+				String Elt = listProtocol.getOptionsElement(i);
+				logger.info(Elt);
+				String[] order = Elt.split(";", 6);
+				
+				listOrder.add(new Order(Integer.parseInt(order[0]), order[1], order[2], Integer.parseInt(order[3]), order[4],new BigDecimal(order[5])));
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+		logger.info("== Fin de la liste des commandes ==");
+		return listOrder;
 	}
 }

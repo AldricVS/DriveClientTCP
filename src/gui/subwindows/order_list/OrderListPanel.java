@@ -62,7 +62,7 @@ public class OrderListPanel extends JPanel {
      */
     private final Dimension BUTTONS_DIMENSION = new Dimension(3 * GuiConstants.WIDTH / 4, 5 * GuiConstants.HEIGHT / 20);
 	private final Dimension BUTTON_SIZE = new Dimension(BUTTONS_DIMENSION.width / 3, BUTTONS_DIMENSION.height / 5);
-	private final Dimension BUTTON_FILLER = new Dimension(2 * GuiConstants.WIDTH / 9, BUTTONS_DIMENSION.height);
+	private final Dimension BUTTON_FILLER = new Dimension(2 * GuiConstants.WIDTH / 5, BUTTONS_DIMENSION.height);
     private JPanel buttonsPanel = new JPanel();
     private JButton returnButton = new JButton("Retour");
     
@@ -106,8 +106,7 @@ public class OrderListPanel extends JPanel {
 	private void extractFromProtocol(Protocol protocol) {
 		try {
 			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol.toString());
-			listOrder.clear();
-			//listOrder = extractor.extractOrderList();
+			listOrder = extractor.extractOrderList();
 		} catch (InvalidProtocolException e) {
 			logger.error("Erreur dans l'extraction du Protocol");
 			e.printStackTrace();

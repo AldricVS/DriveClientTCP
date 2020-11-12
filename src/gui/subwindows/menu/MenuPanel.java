@@ -199,6 +199,10 @@ public class MenuPanel extends JPanel {
 				String productName = addProductPopup.getNameProduct();
 				String productPrice = addProductPopup.getPriceProduct();
 				String productQuantity = addProductPopup.getQuantityProduct();
+				if (productName.isEmpty() || productPrice.isEmpty() || productQuantity.isEmpty()) {
+					JOptionPane.showMessageDialog(context, "Un des champs est vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				//start protocol to add new product
 				Protocol protocol;
 				protocol = ProtocolFactory.createAddProductProtocol(productName, productPrice, productQuantity);

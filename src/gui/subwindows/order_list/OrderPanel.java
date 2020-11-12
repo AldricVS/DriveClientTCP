@@ -20,7 +20,9 @@ public class OrderPanel extends JPanel {
 	private Dimension fieldDimension;
 	private JTextField orderIdField = new JTextField();
 	private JTextField orderUserNameField = new JTextField();
-	private JTextField orderDateField = new JTextField();
+	private JTextField orderTotalPriceField = new JTextField();
+	private JTextField orderDateMadeField = new JTextField();
+	private JTextField orderDateReceiveField = new JTextField();
 	private JButton showDetailsButton = new JButton("Afficher les details");
 	private JButton acceptOrderButton = new JButton("Accepter la commande");
 	private JButton cancelOrderButton = new JButton("Supprimer la commande");
@@ -32,8 +34,8 @@ public class OrderPanel extends JPanel {
 	 */
 	public OrderPanel(Order order, Dimension orderDimension) {
 		this.orderDimension = orderDimension;
-		fieldDimension = new Dimension(orderDimension.width / 5, orderDimension.height / 6);
-		buttonDimension = new Dimension(2 * orderDimension.width / 15, 2 * orderDimension.height / 3);
+		fieldDimension = new Dimension(7 * orderDimension.width / 50, orderDimension.height / 6);
+		buttonDimension = new Dimension(orderDimension.width / 10, 2 * orderDimension.height / 3);
 		
 		setText(order);
 		init();
@@ -43,11 +45,16 @@ public class OrderPanel extends JPanel {
 	
 	private void init() {
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		setMinimumSize(orderDimension);
+		//TODO: refaire les dimensions (correctement) pour avoir un affichage maximum convenable
+		setMaximumSize(orderDimension);
 	}
 	
 	private void setText(Order order) {
-		
+		orderIdField.setText( ((Integer)order.getIdOrder()).toString());
+		orderUserNameField.setText(order.getUserName());
+		orderTotalPriceField.setText( ((BigDecimal)order.getTotalPrice()).toString());
+		orderDateMadeField.setText(order.getDateCommandMade());
+		orderDateReceiveField.setText(order.getDateCommandReceive());
 	}
 
 	private void initField() {
@@ -59,14 +66,17 @@ public class OrderPanel extends JPanel {
 		orderUserNameField.setEditable(false);
 		add(orderUserNameField);
 		
-		orderDateField.setPreferredSize(fieldDimension);
-		orderDateField.setEditable(false);
-		add(orderDateField);
+		orderDateMadeField.setPreferredSize(fieldDimension);
+		orderDateMadeField.setEditable(false);
+		add(orderDateMadeField);
+		
+		orderDateReceiveField.setPreferredSize(fieldDimension);
+		orderDateReceiveField.setEditable(false);
+		add(orderDateReceiveField);
 	}
 	
 	private void initButton() {
 		showDetailsButton.setPreferredSize(buttonDimension);
-		//addQuantityButton.addActionListener();
 		add(showDetailsButton);
 		
 		acceptOrderButton.setPreferredSize(buttonDimension);

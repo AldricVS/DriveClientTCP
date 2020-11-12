@@ -66,8 +66,18 @@ public class Protocol {
 		options.add(optionString);
 	}
 	
-	//TODO une méthode avec les ... pour pouvoir rajouter autant de paramètre qu'on veut
-	//ce sera de la forme d'un DO WHILE
+	public void appendOptions(String ... optionString) {
+		String listOptionString = new String();
+		for (String string : optionString) {
+			listOptionString.concat(string.concat(";"));
+		}
+		//check if at least one option as been added
+		if (listOptionString.endsWith(";")) {
+			//remove the last ;
+			listOptionString.substring(0, listOptionString.length()-1);
+			options.add(listOptionString);
+		}
+	}
 	
 	/**
 	 * Add an option with two parameters using the formatism described.

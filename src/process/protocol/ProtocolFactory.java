@@ -36,7 +36,7 @@ public class ProtocolFactory {
 	public static Protocol createAddProductProtocol(String name, String price, String quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.ADD_NEW_PRODUCT);
-		protocol.appendThreeOptions(name, price, quantity);
+		protocol.appendOptions(name, price, quantity);
 		logger.info(protocol.toString());
 		return protocol;
 	}
@@ -44,7 +44,7 @@ public class ProtocolFactory {
 	public static Protocol createAddProductQuantityProtocol(String id, String quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.ADD_PRODUCT_QUANTITY);
-		protocol.appendTwoOptions(id, quantity);
+		protocol.appendOptions(id, quantity);
 		logger.info(protocol.toString());
 		return protocol;
 	}
@@ -52,7 +52,7 @@ public class ProtocolFactory {
 	public static Protocol createRemoveProductQuantityProtocol(String id, String quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.REMOVE_PRODUCT_QUANTITY);
-		protocol.appendTwoOptions(id, quantity);
+		protocol.appendOptions(id, quantity);
 		logger.info(protocol.toString());
 		return protocol;
 	}
@@ -76,6 +76,60 @@ public class ProtocolFactory {
 	public static Protocol createCancelOrderProtocol(String id) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.DELETE_ORDER);
+		protocol.appendOption(id);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createGetListProductProtocol() {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.GET_PRODUCT_LIST);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createGetListOrderProtocol() {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.GET_ORDER_LIST);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createGetListEmployeeProtocol() {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.GET_EMPLOYEE_LIST);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createAddEmployeeProtocol(String employeeName, String password) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.ADD_EMPLOYEE);
+		protocol.appendOption(employeeName);
+		protocol.appendOption(password);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createRemoveEmployeeProtocol(String employeeName) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.REMOVE_EMPLOYEE);
+		protocol.appendOption(employeeName);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createAddPromotionProtocol(String id, String price) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.APPLY_PROMOTION);
+		protocol.appendOptions(id, price);
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createRemovePromotionProtocol(String id) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.REMOVE_PROMOTION);
 		protocol.appendOption(id);
 		logger.info(protocol.toString());
 		return protocol;

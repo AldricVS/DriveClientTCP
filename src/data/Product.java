@@ -1,13 +1,17 @@
 package data;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  * Class containing all describers of a product
  * 
  * @author Aldric
+ * @author Maxence Hennekein
  */
 public class Product {
+	private int idProduct;
 	private String name;
 	private int quantity;
 	/**
@@ -16,11 +20,21 @@ public class Product {
 	private BigDecimal price;
 	private BigDecimal promotion;
 
-	public Product(String name, int quantity, BigDecimal price, BigDecimal promotion) {
+	public Product(int idProduct, String name, int quantity, BigDecimal price, BigDecimal promotion) {
+		this.idProduct = idProduct;
 		this.name = name;
 		this.quantity = quantity;
-		this.price = price;
+		this.price = price.round(new MathContext(1, RoundingMode.HALF_UP));
+		if (promotion != null) {
+			promotion = promotion.round(new MathContext(1, RoundingMode.HALF_UP));
+		}
 		this.promotion = promotion;
+	}
+
+	public Product(String name, BigDecimal price, int quantity) {
+		this.name = name;
+		this.quantity = quantity;
+		this.price = price.round(new MathContext(1, RoundingMode.HALF_UP));
 	}
 
 	public String getName() {
@@ -38,7 +52,15 @@ public class Product {
 	public BigDecimal getPromotion() {
 		return promotion;
 	}
+	
+	public int getIdProduct() {
+		return idProduct;
+	}
 
+	public void setIdProduct(int idProduct) {
+		this.idProduct = idProduct;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}

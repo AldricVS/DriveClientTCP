@@ -35,14 +35,18 @@ public class ProtocolListExtractor extends ProtocolExtractor {
 		
 		
 		logger.info("== Listage des "+taille+" produits recus ==");
-		
-		for (int i = 1; i < max; i++) {
-			String Elt = listProtocol.getOptionsElement(i);
-			logger.info(Elt);
-			String[] product = Elt.split(";", 5);
-			BigDecimal promotion = (product[4] == "null") ? new BigDecimal(product[4]) : null;
-			
-			listProduct.add(new Product(product[1], (Integer.parseInt(product[2])), new BigDecimal(product[3]), promotion));
+		try {
+			for (int i = 1; i < max; i++) {
+				String Elt = listProtocol.getOptionsElement(i);
+				logger.info(Elt);
+				String[] product = Elt.split(";", 5);
+				BigDecimal promotion = (product[4].equals("null")) ? null : new BigDecimal(product[4]);
+				
+				listProduct.add(new Product(Integer.parseInt(product[0]), product[1], Integer.parseInt(product[2]), new BigDecimal(product[3]), promotion));
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
 		}
 		logger.info("== Fin de la liste des produits ==");
 		return listProduct;

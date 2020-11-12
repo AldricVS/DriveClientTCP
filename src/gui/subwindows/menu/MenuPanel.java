@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -15,15 +16,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import data.Protocol;
+import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
 import gui.subwindows.popup_window.addEmployeePanel;
 import gui.subwindows.popup_window.addProductPanel;
+import process.connection.ServerConnectionHandler;
+import process.protocol.ProtocolFactory;
 
 /**
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
+ * @author Maxence Hennekein
  */
 public class MenuPanel extends JPanel {
 
@@ -181,10 +187,21 @@ public class MenuPanel extends JPanel {
 				String productPrice = addProductPopup.getPriceProduct();
 				String productQuantity = addProductPopup.getQuantityProduct();
 				//start protocol to add new product
+				Protocol protocol;
+				protocol = ProtocolFactory.createAddProductProtocol(productName, productPrice, productQuantity);
+				try {
+					ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					return;
+				} catch (InvalidProtocolException e1) {
+					e1.printStackTrace();
+					return;
+				}
 				//when it ends, change to product list
 				context.changeWindow(WindowName.PRODUCT_LIST.name());
 			}
-			//has the popup was closed, nothing happen
+			//the popup was closed, nothing happen
 		}
 	}
 	

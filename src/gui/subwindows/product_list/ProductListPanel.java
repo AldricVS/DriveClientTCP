@@ -36,7 +36,7 @@ import process.protocol.ProtocolListExtractor;
 /**
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
- * @author Maxence
+ * @author Maxence Hennekein
  */
 public class ProductListPanel extends JPanel {
 	private static Logger logger = LoggerUtility.getLogger(ProductListPanel.class, LoggerUtility.LOG_PREFERENCE);
@@ -59,13 +59,13 @@ public class ProductListPanel extends JPanel {
     private JPanel productListPanel;
     
     //test seulement, créer quelques produits pour essayer l'affichage
-    private Product product1 = new Product("Caillou", 5, new BigDecimal(5), null);
-    private Product product2 = new Product("Rocher", 2, new BigDecimal(19.5), null);
-    private Product product3 = new Product("Pierre", 50, new BigDecimal(0.25), null);
-    private Product product4 = new Product("Arbre", 50, new BigDecimal(0.25), null);
-    private Product product5 = new Product("Branche", 50, new BigDecimal(0.25), null);
-    private Product product6 = new Product("Feuille", 50, new BigDecimal(0.25), null);
-    private Product product7 = new Product("Eau", 50, new BigDecimal(0.25), null);
+    private Product product1 = new Product(1, "Caillou", 5, new BigDecimal(5), new BigDecimal(4.5));
+    private Product product2 = new Product(2, "Rocher", 2, new BigDecimal(19.5), null);
+    private Product product3 = new Product(3, "Pierre", 50, new BigDecimal(0.25), null);
+    private Product product4 = new Product(4, "Arbre", 50, new BigDecimal(0.25), new BigDecimal(0.05));
+    private Product product5 = new Product(5, "Branche", 50, new BigDecimal(0.25), null);
+    private Product product6 = new Product(6, "Feuille", 50, new BigDecimal(0.25), null);
+    private Product product7 = new Product(7, "Eau", 50, new BigDecimal(0.25), null);
     //list de product
     private Product[] productListTest;
     private int size = 7;
@@ -146,12 +146,14 @@ public class ProductListPanel extends JPanel {
 		initTest();
 		initListTest();
 		
-		//Protocol listProduct;
+		Protocol listProtocol;
 		//listProduct = context.initListProduct();
+		listProtocol = new Protocol(ActionCodes.SUCESS, list);
+		logger.info(listProtocol.toString());
 		
 		
 		//if (listProduct != null) {
-			extractFromProtocol(new Protocol(ActionCodes.SUCESS, list));
+			extractFromProtocol(listProtocol);
 				//On transforme notre liste de produit en affichage
 			productListPanel = new JPanel();
 			productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));

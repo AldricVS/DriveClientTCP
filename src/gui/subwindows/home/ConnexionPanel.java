@@ -26,6 +26,7 @@ import gui.WindowName;
  * First panel of the application. Ask for user to connect with login and password.
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
+ * @author Maxence Hennekein
  */
 public class ConnexionPanel extends JPanel {
 

@@ -12,7 +12,7 @@ import data.Product;
 
 /**
  * 
- * @author Maxence
+ * @author Maxence Hennekein
  */
 public class ProductPanel extends JPanel {
 	private Dimension productDimension;
@@ -57,6 +57,7 @@ public class ProductPanel extends JPanel {
 		productNameField.setEditable(false);
 		add(productNameField);
 		
+		//TODO appliquer la promotion (avec un style etout)
 		productPriceField.setPreferredSize(fieldDimension);
 		productPriceField.setEditable(false);
 		add(productPriceField);

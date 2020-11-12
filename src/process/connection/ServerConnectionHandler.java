@@ -18,6 +18,7 @@ import process.protocol.ProtocolExtractor;
 /**
  * This class will handle all things related to the connection with the server
  * @author Aldric
+ * @author Maxence Hennekein
  */
 public class ServerConnectionHandler {
 	private static Logger logger = LoggerUtility.getLogger(ServerConnectionHandler.class, LoggerUtility.LOG_PREFERENCE);

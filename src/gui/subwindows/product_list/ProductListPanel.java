@@ -125,6 +125,8 @@ public class ProductListPanel extends JPanel {
 	 * @param size the amount of Product
 	 */
 	private void initProductPanel(List<Product> productList) {
+		//clear product panel in order to be sure that we start on a fresh start
+		productListPanel.removeAll();
 		for (Iterator<Product> i = productList.iterator(); i.hasNext(); ) {
 			Product p = i.next();
 			productListPanel.add(new ProductPanel(p, PRODUCT_LIST_DIMENSION));
@@ -190,11 +192,24 @@ public class ProductListPanel extends JPanel {
      * Refresh the panel asking to the server the product list
      */
 	public void refreshPanel() {
+		boolean isRefreshValid = false;
 		try {
 			Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(ProtocolFactory.createGetListProductProtocol());
+			if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+				isRefreshValid = true;
+				extractFromProtocol(protocolRecieved);
+				initProductPanel(listProduct);
+				listScrollPanel.setViewportView(productListPanel);
+				repaint();
+				productListPanel.repaint();
+			}
 		} catch (IOException | InvalidProtocolException e) {
 			//we can't do anymore here, go back to menu
 			e.printStackTrace();
+		}
+		
+		//if something bad happens, go to menu
+		if(!isRefreshValid) {
 			context.changeWindow(WindowName.MENU);
 		}
 	}

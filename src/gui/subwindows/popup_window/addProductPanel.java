@@ -12,9 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 
 public class addProductPanel extends JOptionPane{
+	private static final int NUMBER_COLUMNS = 20; 
+	
 	
 	//Panel
 	JPanel addProductPanel = new JPanel();
@@ -27,7 +30,7 @@ public class addProductPanel extends JOptionPane{
 	
 	//TextArea
 	//private static int FIELD_DIMENSION = GuiConstants.;
-	JTextField fieldName = new JTextField(20);
+	JTextField fieldName = new JTextField(NUMBER_COLUMNS);
 	JFormattedTextField fieldPrice;
 	JFormattedTextField fieldQuantity;
 
@@ -74,27 +77,44 @@ public class addProductPanel extends JOptionPane{
 	private void initFormattedTextFileds() {
 		NumberFormat integerNumberFormat = NumberFormat.getIntegerInstance();
 		//remove comas to separate each digits
-		integerNumberFormat.setGroupingUsed(false);
-		NumberFormat priceNumberFormat = NumberFormat.getNumberInstance();
-		
-		//quantity cannot be more than 999
+		integerNumberFormat.setMaximumFractionDigits(0);
 		integerNumberFormat.setMaximumIntegerDigits(3);
 		
-		//price cannot be more than 999.99€
-		priceNumberFormat.setMaximumIntegerDigits(3);
-		priceNumberFormat.setMaximumFractionDigits(2);
+		NumberFormatter priceNumberFormat = new NumberFormatter();
+//		//quantity cannot be more than 999
+//		integerNumberFormat.setMaximumIntegerDigits(3);
+//		
+//		//price cannot be more than 999.99€
+//		priceNumberFormat.setMaximumIntegerDigits(3);
+//		priceNumberFormat.setMaximumFractionDigits(2);
+		priceNumberFormat.setMinimum(0.01);
+		priceNumberFormat.setMaximum(999.99);
 		
 		fieldPrice = new JFormattedTextField(priceNumberFormat);
+		fieldPrice.setColumns(NUMBER_COLUMNS);
 		fieldQuantity = new JFormattedTextField(integerNumberFormat);
+		fieldQuantity.setColumns(NUMBER_COLUMNS);
 	}
 
 	/**
-	 * @return true if an Element will be added, false if canceled
+	 * @return true if a valid element can be added, false if canceled or the fields's content are not valid
 	 */
 	public boolean getPopup() {
 		int answer;
 		answer = showOptionDialog(null, addProductPanel, "Ajouter un produit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		if ((answer == JOptionPane.NO_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
+			return false;
+		}
+		//we will check if all fields are filled correctly
+		String nameProduct = getNameProduct();
+		if(nameProduct.contains(";") || nameProduct.contains("<") || nameProduct.contains(">")) {
+			return false;
+		}
+		try {
+			//if values are not valid, they will throw a NumberFormatException
+			Integer.parseInt(getQuantityProduct());
+			new BigDecimal(getPriceProduct());
+		}catch (NumberFormatException e) {
 			return false;
 		}
 		return true;
@@ -110,6 +130,6 @@ public class addProductPanel extends JOptionPane{
 	}
 	
 	public String getQuantityProduct() {
-		return fieldPrice.getText();
+		return fieldQuantity.getText();
 	}
 }

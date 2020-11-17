@@ -119,7 +119,7 @@ private MainWindow context;
 			String employeePassword = addEmployeePopup.getPassword();
 			String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
 			//start protocol to add new employee
-				context.changeWindow(WindowName.EMPLOYEE_LIST);
+			context.changeWindow(WindowName.EMPLOYEE_LIST);
 		}
 	}
 	

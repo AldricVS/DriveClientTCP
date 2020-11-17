@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,8 +30,11 @@ import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.components.DialogHandler;
 import gui.subwindows.popup_window.addProductPanel;
 import logger.LoggerUtility;
+import process.connection.ServerConnectionHandler;
+import process.protocol.ProtocolFactory;
 import process.protocol.ProtocolListExtractor;
 
 /**
@@ -90,7 +94,7 @@ public class ProductListPanel extends JPanel {
 		titlelabel.setFont(new Font("Serif", Font.BOLD, TITLE_DIMENSION.height / 2));
 		titlePanel.add(titlelabel);
 	}
-	
+
 	public void initList(Protocol protocol) {
 		extractFromProtocol(protocol);
 		
@@ -152,20 +156,46 @@ public class ProductListPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//pop-up
 			addProductPanel addProductPopup = new addProductPanel();
-			addProductPopup.getPopup();
-			String productName = addProductPopup.getNameProduct();
-			String productPrice = addProductPopup.getPriceProduct();
-			String productQuantity = addProductPopup.getQuantityProduct();
-			//start protocol to add new product
-				//when it ends, change to product list
-				context.changeWindow(WindowName.PRODUCT_LIST.name());
-			//redraw ?
+			if(addProductPopup.getPopup()) {
+				String productName = addProductPopup.getNameProduct();
+				String productPrice = addProductPopup.getPriceProduct();
+				String productQuantity = addProductPopup.getQuantityProduct();
+				
+				//start protocol to add new product
+				Protocol protcol = ProtocolFactory.createAddProductProtocol(productName, productPrice, productQuantity);
+				try {
+					Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protcol);
+					//If server send success message, add the new product in the list
+					if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+						//refresh the page : ask a new selection to server
+						refreshPanel();
+					}else {
+						DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
+					}
+				} catch (IOException | InvalidProtocolException e1) {
+					e1.printStackTrace();
+					DialogHandler.showErrorDialog(context, "Mauvaise réponse", "La réponse du serveur n'a pas pu être déchifrée.");
+				}
+			}
 		}
 	}
 	
     class ActionRetour implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			context.changeWindow(WindowName.MENU.name());
+			context.changeWindow(WindowName.MENU);
+		}
+	}
+
+    /**
+     * Refresh the panel asking to the server the product list
+     */
+	public void refreshPanel() {
+		try {
+			Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(ProtocolFactory.createGetListProductProtocol());
+		} catch (IOException | InvalidProtocolException e) {
+			//we can't do anymore here, go back to menu
+			e.printStackTrace();
+			context.changeWindow(WindowName.MENU);
 		}
 	}
 }

@@ -137,7 +137,7 @@ public class OrderListPanel extends JPanel {
 	
     class ActionRetour implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			context.changeWindow(WindowName.MENU.name());
+			context.changeWindow(WindowName.MENU);
 		}
 	}
 }

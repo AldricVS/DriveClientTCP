@@ -143,7 +143,7 @@ public class ConnexionPanel extends JPanel {
 				//ServerConnectionHandler
 			answer = context.launchConnection(Id, Mdp, false);
 			if (answer) {
-				context.changeWindow(WindowName.MENU.name());
+				context.changeWindow(WindowName.MENU);
 			}
 		}
 	}
@@ -158,7 +158,7 @@ public class ConnexionPanel extends JPanel {
 				//ServerConnectionHandler
 			answer = context.launchConnection(Id, Mdp, true);
 			if (answer) {
-				context.changeWindow(WindowName.MENU.name());
+				context.changeWindow(WindowName.MENU);
 			}
 		}
 	}

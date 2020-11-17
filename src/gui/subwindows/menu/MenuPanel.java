@@ -167,7 +167,7 @@ public class MenuPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			context.disconnect();
 			//revenir au login
-			context.changeWindow(WindowName.LOGIN.name());
+			context.changeWindow(WindowName.LOGIN);
 		}
 	}
 	
@@ -184,7 +184,7 @@ public class MenuPanel extends JPanel {
 				ex.printStackTrace();
 			}
 			context.initProductList(productList);
-			context.changeWindow(WindowName.PRODUCT_LIST.name());
+			context.changeWindow(WindowName.PRODUCT_LIST);
 		}
 	}
 	
@@ -216,7 +216,7 @@ public class MenuPanel extends JPanel {
 					return;
 				}
 				//when it ends, change to product list
-				context.changeWindow(WindowName.PRODUCT_LIST.name());
+				context.changeWindow(WindowName.PRODUCT_LIST);
 			}
 			//the popup was closed, nothing happen
 		}
@@ -235,7 +235,7 @@ public class MenuPanel extends JPanel {
 				ex.printStackTrace();
 			}
 			context.initListOrder(orderList);
-			context.changeWindow(WindowName.ORDER_LIST.name());
+			context.changeWindow(WindowName.ORDER_LIST);
 		}
 	}
 	class ActionGoToEmployeeList implements ActionListener {
@@ -250,7 +250,7 @@ public class MenuPanel extends JPanel {
 				ex.printStackTrace();
 			}
 			context.initEmployeeList(employeeList);
-			context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+			context.changeWindow(WindowName.EMPLOYEE_LIST);
 		}
 	}
 	
@@ -274,7 +274,7 @@ public class MenuPanel extends JPanel {
 						ex.printStackTrace();
 					}
 					//when it ends, change to product list
-					context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+					context.changeWindow(WindowName.EMPLOYEE_LIST);
 				}
 				else {
 					JOptionPane.showMessageDialog(context, "Validation du Mot de Passe incorrect.", "Erreur", JOptionPane.ERROR_MESSAGE);

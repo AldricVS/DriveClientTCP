@@ -119,13 +119,13 @@ private MainWindow context;
 			String employeePassword = addEmployeePopup.getPassword();
 			String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
 			//start protocol to add new employee
-				context.changeWindow(WindowName.EMPLOYEE_LIST.name());
+				context.changeWindow(WindowName.EMPLOYEE_LIST);
 		}
 	}
 	
     class ActionRetour implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			context.changeWindow(WindowName.MENU.name());
+			context.changeWindow(WindowName.MENU);
 		}
 	}
 }

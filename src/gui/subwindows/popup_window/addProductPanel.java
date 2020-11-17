@@ -3,7 +3,11 @@ package gui.subwindows.popup_window;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,13 +28,14 @@ public class addProductPanel extends JOptionPane{
 	//TextArea
 	//private static int FIELD_DIMENSION = GuiConstants.;
 	JTextField fieldName = new JTextField(20);
-	JTextField fieldPrice = new JTextField(20);
-	JTextField fieldQuantity = new JTextField(20);
+	JFormattedTextField fieldPrice;
+	JFormattedTextField fieldQuantity;
 
 	private static String[] options = {"Ajouter", "Annuler"};
 	
 	public addProductPanel() {
 		addProductPanel.setLayout(new GridBagLayout());
+		initFormattedTextFileds();
 		GridBagConstraints c = new GridBagConstraints();
 		//c.weightx = 2;
 		//c.weighty = 3;
@@ -66,8 +71,24 @@ public class addProductPanel extends JOptionPane{
 		addProductPanel.add(fieldQuantity, c);
 	}
 	
+	private void initFormattedTextFileds() {
+		NumberFormat integerNumberFormat = NumberFormat.getIntegerInstance();
+		//remove comas to separate each digits
+		integerNumberFormat.setGroupingUsed(false);
+		NumberFormat priceNumberFormat = NumberFormat.getNumberInstance();
+		
+		//quantity cannot be more than 999
+		integerNumberFormat.setMaximumIntegerDigits(3);
+		
+		//price cannot be more than 999.99€
+		priceNumberFormat.setMaximumIntegerDigits(3);
+		priceNumberFormat.setMaximumFractionDigits(2);
+		
+		fieldPrice = new JFormattedTextField(priceNumberFormat);
+		fieldQuantity = new JFormattedTextField(integerNumberFormat);
+	}
+
 	/**
-	 * 
 	 * @return true if an Element will be added, false if canceled
 	 */
 	public boolean getPopup() {
@@ -84,10 +105,11 @@ public class addProductPanel extends JOptionPane{
 	}
 	
 	public String getPriceProduct() {
-		return fieldPrice.getText();
+		//price is displayed with ",", we need to replace it
+		return fieldPrice.getText().replace(',', '.');
 	}
 	
 	public String getQuantityProduct() {
-		return fieldQuantity.getText();
+		return fieldPrice.getText();
 	}
 }

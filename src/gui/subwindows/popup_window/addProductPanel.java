@@ -12,9 +12,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.NumberFormatter;
 
+import gui.components.document_filters.IntegerDocumentFilter;
+import gui.components.document_filters.PriceDocumentFilter;
 
+/**
+ * Pop up panel that user have to fill in order to create a new product
+ * @author Maxence Hennkein
+ * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
+ */
 public class addProductPanel extends JOptionPane{
 	private static final int NUMBER_COLUMNS = 20; 
 	
@@ -31,8 +39,8 @@ public class addProductPanel extends JOptionPane{
 	//TextArea
 	//private static int FIELD_DIMENSION = GuiConstants.;
 	JTextField fieldName = new JTextField(NUMBER_COLUMNS);
-	JFormattedTextField fieldPrice;
-	JFormattedTextField fieldQuantity;
+	JTextField fieldPrice;
+	JTextField fieldQuantity;
 
 	private static String[] options = {"Ajouter", "Annuler"};
 	
@@ -75,25 +83,16 @@ public class addProductPanel extends JOptionPane{
 	}
 	
 	private void initFormattedTextFileds() {
-		NumberFormat integerNumberFormat = NumberFormat.getIntegerInstance();
-		//remove comas to separate each digits
-		integerNumberFormat.setMaximumFractionDigits(0);
-		integerNumberFormat.setMaximumIntegerDigits(3);
 		
-		NumberFormatter priceNumberFormat = new NumberFormatter();
-//		//quantity cannot be more than 999
-//		integerNumberFormat.setMaximumIntegerDigits(3);
-//		
-//		//price cannot be more than 999.99€
-//		priceNumberFormat.setMaximumIntegerDigits(3);
-//		priceNumberFormat.setMaximumFractionDigits(2);
-		priceNumberFormat.setMinimum(0.01);
-		priceNumberFormat.setMaximum(999.99);
-		
-		fieldPrice = new JFormattedTextField(priceNumberFormat);
+		fieldPrice = new JTextField();
+		AbstractDocument abstractDocumentPrice = (AbstractDocument)fieldPrice.getDocument();
+		abstractDocumentPrice.setDocumentFilter(new PriceDocumentFilter());
 		fieldPrice.setColumns(NUMBER_COLUMNS);
-		fieldQuantity = new JFormattedTextField(integerNumberFormat);
-		fieldQuantity.setColumns(NUMBER_COLUMNS);
+
+
+		fieldQuantity = new JTextField(NUMBER_COLUMNS);
+		AbstractDocument abstractDocumentQuantity = (AbstractDocument)fieldQuantity.getDocument();
+		abstractDocumentQuantity.setDocumentFilter(new IntegerDocumentFilter());
 	}
 
 	/**

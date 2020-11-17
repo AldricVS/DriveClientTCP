@@ -4,6 +4,9 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
+import data.Protocol;
+import data.enums.ActionCodes;
+
 /**
  * Class used to create and show pop-ups to user
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
@@ -31,6 +34,19 @@ public class DialogHandler {
 	}
 	
 	/**
+	 * Display the error message of the protocol recieved from the server to the user. 
+	 * If protocol is not an error protocol nor protocol has no error message, nothing will be displayed 
+	 * @param parentComponent in front of which component the dialog will appear
+	 * @param errorProtocol the error protocol recieved 
+	 */
+	public static void showErrorDialogFromProtocol(Component parentComponent, Protocol errorProtocol) {
+		//we check if it is really an error protocol
+		if(errorProtocol.getActionCode() == ActionCodes.ERROR && errorProtocol.getOptionsListSize() > 0) {
+			JOptionPane.showMessageDialog(parentComponent, errorProtocol.getOptionsElement(0), "Erreur", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	/**
 	 * Show a dialog that asks for user confirmation.
 	 * @param parentComponent in front of which component the dialog will appear
 	 * @param title the title of the dialog
@@ -41,4 +57,6 @@ public class DialogHandler {
 		int answer = JOptionPane.showConfirmDialog(parentComponent, content, title, JOptionPane.YES_NO_OPTION);
 		return answer == JOptionPane.YES_OPTION;
 	}
+	
+	
 }

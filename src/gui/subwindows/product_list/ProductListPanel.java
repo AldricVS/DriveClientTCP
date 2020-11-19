@@ -95,18 +95,29 @@ public class ProductListPanel extends JPanel {
 		titlePanel.add(titlelabel);
 	}
 
-	public void initList(Protocol protocol) {
-		extractFromProtocol(protocol);
-		
-		//On transforme notre liste de produit en affichage
-		productListPanel = new JPanel();
-		productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
-		productListPanel.setMinimumSize(LIST_DIMENSION);
-		initProductPanel(listProduct);
-		
-		listScrollPanel.setViewportView(productListPanel);
-		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	public void initPanel(Protocol protocol) {
+		try {
+			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
+			listProduct = extractor.extractProductList();
+			
+			//On transforme notre liste de produit en affichage
+			productListPanel = new JPanel();
+			productListPanel.setLayout(new BoxLayout(productListPanel, BoxLayout.PAGE_AXIS));
+			productListPanel.setMinimumSize(LIST_DIMENSION);
+			initProductPanel(listProduct);
+			
+			listScrollPanel.setViewportView(productListPanel);
+			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			
+			//if we are here, no errors occured, we can switch window
+			context.changeWindow(WindowName.PRODUCT_LIST);
+			
+		} catch (InvalidProtocolException e) {
+			//show error to user and go back to menu
+			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
+			context.changeWindow(WindowName.MENU);
+		}
 	}
 	
 	private void extractFromProtocol(Protocol protocol) {
@@ -114,8 +125,9 @@ public class ProductListPanel extends JPanel {
 			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
 			listProduct = extractor.extractProductList();
 		} catch (InvalidProtocolException e) {
-			logger.error("Erreur dans l'extraction du Protocol");
-			e.printStackTrace();
+			//show error to user and go back to menu
+			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
+			context.changeWindow(WindowName.MENU);
 		}
 	}
 
@@ -196,15 +208,16 @@ public class ProductListPanel extends JPanel {
 		try {
 			Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(ProtocolFactory.createGetListProductProtocol());
 			if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
-				isRefreshValid = true;
 				extractFromProtocol(protocolRecieved);
 				initProductPanel(listProduct);
 				listScrollPanel.setViewportView(productListPanel);
 				repaint();
 				productListPanel.repaint();
+				isRefreshValid = true;
 			}
 		} catch (IOException | InvalidProtocolException e) {
 			//we can't do anymore here, go back to menu
+			DialogHandler.showErrorDialog(context, "Rafraichissement impossible", "Impossible de récupérer la liste des produits, retour au menu.");
 			e.printStackTrace();
 		}
 		

@@ -58,10 +58,10 @@ public class ProductPanel extends JPanel {
 		productQuantityField.setText( ((Integer)product.getQuantity()).toString());
 		
 		//we will check if we have a promotion, and add it here if it is the case
-		String priceText = ((BigDecimal)product.getPrice()).toString() + "€";
+		String priceText = product.getPrice().toString() + "€";
 		if(product.hasPromotion()) {
 			String promotionText = product.getPromotion().toString() + "€";
-			productPriceField.setText(promotionText + "(prix normal : " + priceText + ")");
+			productPriceField.setText(promotionText + " (prix normal : " + priceText + ")");
 		}else {
 			productPriceField.setText(priceText);
 		}
@@ -75,14 +75,14 @@ public class ProductPanel extends JPanel {
 		productNameField.setFont(productNameField.getFont().deriveFont(20f));
 		add(productNameField);
 		
-		//TODO appliquer la promotion (avec un style etout)
+		
 		productPriceField.setPreferredSize(fieldDimension);
 		productPriceField.setEditable(false);
 		//a promotion will be bold instead
 		if(product.hasPromotion()) {
-			productPriceField.setFont(productNameField.getFont().deriveFont(20f));
-		}else {
 			productPriceField.setFont(productNameField.getFont().deriveFont(Font.BOLD, 20f));
+		}else {
+			productPriceField.setFont(productNameField.getFont().deriveFont(20f));
 		}
 		
 		

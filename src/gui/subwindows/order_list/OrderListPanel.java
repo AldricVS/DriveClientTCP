@@ -89,7 +89,7 @@ public class OrderListPanel extends JPanel {
 		titlePanel.add(titlelabel);
 	}
 	
-	public void initList(Protocol protocol) {
+	public void initPanel(Protocol protocol) {
 		extractFromProtocol(protocol);
 		
 		//On transforme notre liste de produit en affichage

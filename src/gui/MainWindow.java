@@ -170,11 +170,11 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void initProductList(Protocol productList) {
-		productListPanel.initList(productList);
+		productListPanel.initPanel(productList);
 	}
 
 	public void initListOrder(Protocol orderList) {
-		orderListPanel.initList(orderList);
+		orderListPanel.initPanel(orderList);
 	}
 
 	public void initEmployeeList(Protocol employeeList) {

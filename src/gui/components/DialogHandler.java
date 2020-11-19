@@ -1,6 +1,7 @@
 package gui.components;
 
 import java.awt.Component;
+import java.awt.Toolkit;
 
 import javax.swing.JOptionPane;
 
@@ -30,6 +31,7 @@ public class DialogHandler {
 	 * @param content the message to send to the user
 	 */
 	public static void showErrorDialog(Component parentComponent, String title, String content) {
+		Toolkit.getDefaultToolkit().beep();
 		JOptionPane.showMessageDialog(parentComponent, content, title, JOptionPane.ERROR_MESSAGE);
 	}
 	
@@ -42,6 +44,7 @@ public class DialogHandler {
 	public static void showErrorDialogFromProtocol(Component parentComponent, Protocol errorProtocol) {
 		//we check if it is really an error protocol
 		if(errorProtocol.getActionCode() == ActionCodes.ERROR && errorProtocol.getOptionsListSize() > 0) {
+			Toolkit.getDefaultToolkit().beep();
 			JOptionPane.showMessageDialog(parentComponent, errorProtocol.getOptionsElement(0), "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}

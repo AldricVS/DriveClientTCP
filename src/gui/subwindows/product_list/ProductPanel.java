@@ -1,17 +1,19 @@
 package gui.subwindows.product_list;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.math.BigDecimal;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import data.Product;
 
 /**
- * 
+ * Panel shwoing a single product
  * @author Maxence Hennekein
  */
 public class ProductPanel extends JPanel {
@@ -53,22 +55,42 @@ public class ProductPanel extends JPanel {
 	
 	private void setText(Product product) {
 		productNameField.setText(product.getName());
-		productPriceField.setText( ((BigDecimal)product.getPrice()).toString());
 		productQuantityField.setText( ((Integer)product.getQuantity()).toString());
+		
+		//we will check if we have a promotion, and add it here if it is the case
+		String priceText = ((BigDecimal)product.getPrice()).toString() + "€";
+		if(product.hasPromotion()) {
+			String promotionText = product.getPromotion().toString() + "€";
+			productPriceField.setText(promotionText + "(prix normal : " + priceText + ")");
+		}else {
+			productPriceField.setText(priceText);
+		}
+		
+		
 	}
 
 	private void initField() {
 		productNameField.setPreferredSize(fieldDimension);
 		productNameField.setEditable(false);
+		productNameField.setFont(productNameField.getFont().deriveFont(20f));
 		add(productNameField);
 		
 		//TODO appliquer la promotion (avec un style etout)
 		productPriceField.setPreferredSize(fieldDimension);
 		productPriceField.setEditable(false);
+		//a promotion will be bold instead
+		if(product.hasPromotion()) {
+			productPriceField.setFont(productNameField.getFont().deriveFont(20f));
+		}else {
+			productPriceField.setFont(productNameField.getFont().deriveFont(Font.BOLD, 20f));
+		}
+		
+		
 		add(productPriceField);
 		
 		productQuantityField.setPreferredSize(fieldDimension);
 		productQuantityField.setEditable(false);
+		productQuantityField.setFont(productNameField.getFont().deriveFont(20f));
 		add(productQuantityField);
 	}
 	

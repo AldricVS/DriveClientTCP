@@ -9,66 +9,86 @@ import data.Order;
 import data.Product;
 import data.Protocol;
 import exceptions.InvalidProtocolException;
+import gui.components.DialogHandler;
 import logger.LoggerUtility;
 
 /**
- * Used the same way as {@link process.protocol.ProtocolExtractor ProtocolExtractor} but the some method to extract as a list
+ * Helper class used to get lists of items from a protocol.
+ * Those protocols are writen like :
+ * {@code <ActionCode><NumberOfItems><ItemElt1;ItemElt2;...;ItemEltN><ItemElt1;ItemElt2;...;ItemEltN>...}
  * @author Maxence
+ * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  */
-public class ProtocolListExtractor extends ProtocolExtractor {
+public class ProtocolListExtractor{
 	private static Logger logger = LoggerUtility.getLogger(ProtocolListExtractor.class, LoggerUtility.LOG_PREFERENCE);
+	
+	private static final String ERROR_PRODUCT_LIST = "La liste des produits n'est pas lisible";
+	
+	Protocol listProtocol;
 
-	public ProtocolListExtractor(String protocolString) throws InvalidProtocolException {
-		super(protocolString);
+	public ProtocolListExtractor(Protocol protocol) throws InvalidProtocolException {
+		this.listProtocol = protocol;
 	}
 	
+	/**
+	 * Extract all products from the protocol.
+	 * @return a list containg all products from the protocol
+	 * @throws InvalidProtocolException if product list is not well-formed (it can miss a sub item for instance, or the number
+	 */
 	public ArrayList<Product> extractProductList() throws InvalidProtocolException {
-		Protocol listProtocol = getProtocol();
-		
 		ArrayList<Product> listProduct = new ArrayList<Product>();
 		int max = listProtocol.getOptionsListSize();
-		int taille = Integer.parseInt(listProtocol.getOptionsElement(0));
+		int numberOfProducts = Integer.parseInt(listProtocol.getOptionsElement(0));
 		
-		//Note, on a max-1 car il y a aussi le nombre de produit transmit
-		if (max-1 != taille) {
-			throw new InvalidProtocolException("Le nombre de Produit recu ne correspond pas a celui transmit");
+		//Note, on a max-1 car il y a aussi le nombre de produit transmis
+		if (max-1 != numberOfProducts) {
+			throw new InvalidProtocolException("Une erreur dans le compte des produits à été trouvée.");
 		}
 		
-		
-		logger.info("== Listage des "+taille+" produits recus ==");
+		logger.info("== Listage des "+numberOfProducts+" produits recus ==");
+		String productString = "";
 		try {
 			for (int i = 1; i < max; i++) {
-				String Elt = listProtocol.getOptionsElement(i);
-				logger.info(Elt);
-				String[] product = Elt.split(";", 5);
-				BigDecimal promotion = (product[4].equals("null")) ? null : new BigDecimal(product[4]);
+				productString = listProtocol.getOptionsElement(i);
+				logger.info(productString);
+				String[] productsArray = productString.split(";");
+				//array size must be 4 
+				if(productsArray.length != 4) {
+					logger.error("Product list recieved is not valid : the string \"" + productString +" is not well-formed.\"");
+					throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
+				}
+				BigDecimal promotion = (productsArray[4].equals("null")) ? null : new BigDecimal(productsArray[4]);
 				
-				listProduct.add(new Product(Integer.parseInt(product[0]), product[1], new BigDecimal(product[2]), Integer.parseInt(product[3]), promotion));
+				listProduct.add(new Product(Integer.parseInt(productsArray[0]), productsArray[1], new BigDecimal(productsArray[2]), Integer.parseInt(productsArray[3]), promotion));
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
+			//if we are here, it means that product list is not well formed, protocol is invalid
+			logger.error("Product list recieved is not valid : the string \"" + productString +" is not well-formed.\"");
+			throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
+		}catch (NumberFormatException e) {
+			logger.error("A number cannot be readed in the line \"" + productString + "\"");
+			throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
 		}
 		logger.info("== Fin de la liste des produits ==");
 		return listProduct;
 	}
 	
 	public ArrayList<Order> extractOrderList() throws InvalidProtocolException {
-		Protocol listProtocol = getProtocol();
 		ArrayList<Order> listOrder = new ArrayList<Order>();
 		int max = listProtocol.getOptionsListSize();
-		int taille = Integer.parseInt(listProtocol.getOptionsElement(0));
+		int numberOfProducts = Integer.parseInt(listProtocol.getOptionsElement(0));
 		
-		if (max-1 != taille) {
-			throw new InvalidProtocolException("Le nombre de Commande recu ne correspond pas a celui transmit");
+		if (max-1 != numberOfProducts) {
+			throw new InvalidProtocolException("Une erreur dans le compte des produits à été trouvée.");
 		}
 		
-		logger.info("== Listage des "+taille+" commandes recus ==");
+		logger.info("== Listage des "+numberOfProducts+" commandes recus ==");
 		try {
 			for (int i = 1; i < max; i++) {
-				String Elt = listProtocol.getOptionsElement(i);
-				logger.info(Elt);
-				String[] order = Elt.split(";", 6);
+				String productString = listProtocol.getOptionsElement(i);
+				logger.info(productString);
+				String[] order = productString.split(";", 6);
 				
 				listOrder.add(new Order(Integer.parseInt(order[0]), order[1], order[2], Integer.parseInt(order[3]), order[4],new BigDecimal(order[5])));
 			}

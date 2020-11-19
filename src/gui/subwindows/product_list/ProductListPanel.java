@@ -38,7 +38,7 @@ import process.protocol.ProtocolFactory;
 import process.protocol.ProtocolListExtractor;
 
 /**
- * 
+ * Main panel that shows all products recievec from server
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  * @author Maxence Hennekein
  */
@@ -111,7 +111,7 @@ public class ProductListPanel extends JPanel {
 	
 	private void extractFromProtocol(Protocol protocol) {
 		try {
-			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol.toString());
+			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
 			listProduct = extractor.extractProductList();
 		} catch (InvalidProtocolException e) {
 			logger.error("Erreur dans l'extraction du Protocol");

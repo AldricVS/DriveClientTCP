@@ -23,6 +23,7 @@ import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.components.DialogHandler;
 import gui.subwindows.popup_window.addEmployeePanel;
 import gui.subwindows.popup_window.addProductPanel;
 import process.connection.ServerConnectionHandler;
@@ -175,16 +176,20 @@ public class MenuPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//send protocol to receive productList
 			Protocol protocol = ProtocolFactory.createGetListProductProtocol();
-			Protocol productList = null;
+			Protocol recievedProtocol = null;
 			try {
-				productList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			} catch (InvalidProtocolException ex) {
-				ex.printStackTrace();
+				recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+				if(recievedProtocol.getOptionsListSize() < 2) {
+					MainWindow.logger.error("protocol recieved have no products.");
+					throw new InvalidProtocolException("Aucun produit n'a été récupéré.");
+				}
+				//if no error occurs, we can move safely to the next page
+				context.initProductList(recievedProtocol);
+				context.changeWindow(WindowName.PRODUCT_LIST);
+				
+			} catch (IOException | InvalidProtocolException ex) {
+				DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
 			}
-			context.initProductList(productList);
-			context.changeWindow(WindowName.PRODUCT_LIST);
 		}
 	}
 	
@@ -200,7 +205,7 @@ public class MenuPanel extends JPanel {
 				String productPrice = addProductPopup.getPriceProduct();
 				String productQuantity = addProductPopup.getQuantityProduct();
 				if (productName.isEmpty() || productPrice.isEmpty() || productQuantity.isEmpty()) {
-					JOptionPane.showMessageDialog(context, "Un des champs est vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+					DialogHandler.showErrorDialog(context, "Erreur", "Un des champs est vide.");
 					return;
 				}
 				//start protocol to add new product
@@ -208,15 +213,13 @@ public class MenuPanel extends JPanel {
 				protocol = ProtocolFactory.createAddProductProtocol(productName, productPrice, productQuantity);
 				try {
 					ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-					return;
-				} catch (InvalidProtocolException e1) {
+				} catch (IOException | InvalidProtocolException e1) {
 					e1.printStackTrace();
 					return;
 				}
 				//when it ends, change to product list
 				context.changeWindow(WindowName.PRODUCT_LIST);
+				
 			}
 			//the popup was closed, nothing happen
 		}

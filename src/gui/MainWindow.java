@@ -37,7 +37,7 @@ import process.protocol.ProtocolFactory;
  * @author Maxence Hennekein
  */
 public class MainWindow extends JFrame {
-	private static Logger logger = LoggerUtility.getLogger(MainWindow.class, LoggerUtility.LOG_PREFERENCE);
+	public static Logger logger = LoggerUtility.getLogger(MainWindow.class, LoggerUtility.LOG_PREFERENCE);
 
 	private MainWindow context = this;
 	private Container contentPane;

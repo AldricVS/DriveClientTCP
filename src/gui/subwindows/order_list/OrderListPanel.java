@@ -105,7 +105,7 @@ public class OrderListPanel extends JPanel {
 	
 	private void extractFromProtocol(Protocol protocol) {
 		try {
-			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol.toString());
+			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
 			listOrder = extractor.extractOrderList();
 		} catch (InvalidProtocolException e) {
 			logger.error("Erreur dans l'extraction du Protocol");

@@ -56,6 +56,10 @@ public class Product {
 	public int getIdProduct() {
 		return idProduct;
 	}
+	
+	public boolean hasPromotion() {
+		return promotion != null;
+	}
 
 	public void setIdProduct(int idProduct) {
 		this.idProduct = idProduct;

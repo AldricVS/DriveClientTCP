@@ -15,6 +15,9 @@ import data.Product;
  * @author Maxence Hennekein
  */
 public class ProductPanel extends JPanel {
+	
+	private Product product;
+	
 	private Dimension productDimension;
 	private Dimension buttonDimension;
 	private Dimension fieldDimension;
@@ -31,6 +34,8 @@ public class ProductPanel extends JPanel {
 	 * @param productDimension Dimension of the Panel
 	 */
 	public ProductPanel(Product product, Dimension productDimension) {
+		//we have to keep trace of the product for action listeners
+		this.product = product;
 		this.productDimension = productDimension;
 		fieldDimension = new Dimension(productDimension.width / 5, productDimension.height / 6);
 		buttonDimension = new Dimension(2 * productDimension.width / 15, 2 * productDimension.height / 3);

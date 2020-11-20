@@ -72,7 +72,7 @@ public class ProtocolListExtractor{
 			//if we are here, it means that product list is not well formed, protocol is invalid
 			logger.error("Product list recieved is not valid : the string \"" + productString +"\" is not well-formed.");
 			throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
-		}catch (NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			logger.error("A number cannot be readed in the line \"" + productString + "\"");
 			throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
 		}

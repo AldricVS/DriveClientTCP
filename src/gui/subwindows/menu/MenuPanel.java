@@ -24,6 +24,7 @@ import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
 import gui.components.DialogHandler;
+import gui.subwindows.employee_list.EmployeeListPanel;
 import gui.subwindows.popup_window.addEmployeePanel;
 import gui.subwindows.popup_window.addProductPanel;
 import process.connection.ServerConnectionHandler;
@@ -187,8 +188,10 @@ public class MenuPanel extends JPanel {
 					MainWindow.logger.error("protocol recieved have no products.");
 					throw new InvalidProtocolException("Aucun produit n'a été récupéré.");
 				}
+				
 				//if no error occurs, we can move safely to the next page
 				context.initProductList(recievedProtocol);
+				context.changeWindow(WindowName.PRODUCT_LIST);
 				
 			} catch (IOException | InvalidProtocolException ex) {
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
@@ -211,20 +214,39 @@ public class MenuPanel extends JPanel {
 					DialogHandler.showErrorDialog(context, "Erreur", "Un des champs est vide.");
 					return;
 				}
-				//start protocol to add new product
-				Protocol protocol;
-				protocol = ProtocolFactory.createAddProductProtocol(productName, productPrice, productQuantity);
-				try {
-					ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-				} catch (IOException | InvalidProtocolException e1) {
-					e1.printStackTrace();
-					return;
-				}
-				//when it ends, change to product list
-				context.changeWindow(WindowName.PRODUCT_LIST);
 				
+				Protocol protocol;
+				Protocol recievedProtocol = null;
+				try {
+					//start protocol to add new product
+					protocol = ProtocolFactory.createAddProductProtocol(productName, productPrice, productQuantity);
+					recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+					if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+						DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
+						return;
+					}
+					
+					//when it ends, change to product list
+					protocol = ProtocolFactory.createGetListProductProtocol();
+					recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+					if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+						DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
+						return;
+					}
+					if(recievedProtocol.getOptionsListSize() < 2) {
+						MainWindow.logger.error("protocol recieved have no products.");
+						throw new InvalidProtocolException("Aucun produit n'a pu être récupéré.");
+					}
+					
+					//if no error occurs, we can move safely to the next page
+					context.initProductList(recievedProtocol);
+					context.changeWindow(WindowName.PRODUCT_LIST);
+					
+				} catch (IOException | InvalidProtocolException ex) {
+					ex.printStackTrace();
+					DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+				}
 			}
-			//the popup was closed, nothing happen
 		}
 	}
 	
@@ -235,28 +257,27 @@ public class MenuPanel extends JPanel {
 			Protocol orderList = null;
 			try {
 				orderList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-			} catch (IOException ex) {
+				context.initListOrder(orderList);
+				context.changeWindow(WindowName.ORDER_LIST);
+			} catch (IOException | InvalidProtocolException ex) {
 				ex.printStackTrace();
-			} catch (InvalidProtocolException ex) {
-				ex.printStackTrace();
+				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
 			}
-			context.initListOrder(orderList);
-			context.changeWindow(WindowName.ORDER_LIST);
 		}
 	}
+	
 	class ActionGoToEmployeeList implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Protocol protocol = ProtocolFactory.createGetListEmployeeProtocol();
 			Protocol employeeList = null;
 			try {
 				employeeList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-			} catch (IOException ex) {
+				context.initEmployeeList(employeeList);
+				context.changeWindow(WindowName.EMPLOYEE_LIST);
+			} catch (IOException | InvalidProtocolException ex) {
 				ex.printStackTrace();
-			} catch (InvalidProtocolException ex) {
-				ex.printStackTrace();
+				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
 			}
-			context.initEmployeeList(employeeList);
-			context.changeWindow(WindowName.EMPLOYEE_LIST);
 		}
 	}
 	
@@ -274,16 +295,16 @@ public class MenuPanel extends JPanel {
 					Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
 					try {
 						ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-					} catch (IOException ex) {
+						
+						//when it ends, change to product list
+						context.changeWindow(WindowName.EMPLOYEE_LIST);
+					} catch (IOException | InvalidProtocolException ex) {
 						ex.printStackTrace();
-					} catch (InvalidProtocolException ex) {
-						ex.printStackTrace();
+						DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
 					}
-					//when it ends, change to product list
-					context.changeWindow(WindowName.EMPLOYEE_LIST);
 				}
 				else {
-					JOptionPane.showMessageDialog(context, "Validation du Mot de Passe incorrect.", "Erreur", JOptionPane.ERROR_MESSAGE);
+					DialogHandler.showErrorDialog(context, "Erreur", "Validation du Mot de Passe incorrect");
 				}
 			}
 			//has the popup was closed, nothing happen

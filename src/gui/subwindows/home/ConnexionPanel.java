@@ -191,12 +191,7 @@ public class ConnexionPanel extends JPanel {
 			MainWindow.logger.info("Utilisateur enregistré trouvé: "+rememberedId);
 			reader.close();
 		} catch (FileNotFoundException e1) {
-			File file = new File(PATH_LOGIN);
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			setSavedLogin("");
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
@@ -212,6 +207,25 @@ public class ConnexionPanel extends JPanel {
 				MainWindow.logger.info("Sauvegarde du nom de l'utilisateur: "+rememberId);
 			}
 			writer.close();
+		} catch (FileNotFoundException e1) {
+			String[] path = PATH_LOGIN.split("/");
+			String completePath = path[0];
+			for (int i = 1; (i < path.length - 1) && (i < 5); i++) {
+				completePath += "/" + path[i];
+			}
+			File dir = new File(completePath);
+			dir.mkdirs();
+
+			try {
+				writer = new FileWriter(PATH_LOGIN);
+				if (! (rememberId == null || rememberId.equals(""))) {
+					writer.write(rememberId);
+					MainWindow.logger.info("Sauvegarde du nom de l'utilisateur: "+rememberId);
+				}
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

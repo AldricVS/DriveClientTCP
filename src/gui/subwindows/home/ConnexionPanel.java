@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -49,6 +50,8 @@ public class ConnexionPanel extends JPanel {
 	private JLabel loginLabel = new JLabel("Identifiant", SwingConstants.CENTER);
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
 	private JTextField loginTextArea = new JTextField();
+	private JCheckBox rememberCheckBox = new JCheckBox("Se souvenir de Moi", true);
+	private String rememberedId = null;
 	private JTextField passwordTextArea = new JPasswordField();
 	private final Dimension FIELDS_FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	
@@ -95,6 +98,8 @@ public class ConnexionPanel extends JPanel {
 		loginLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		loginTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
 		loginTextArea.setMaximumSize(TEXTFIELD_DIMENSION);
+		loginTextArea.setText(rememberedId);
+		rememberCheckBox.setAlignmentX(CENTER_ALIGNMENT);
 		passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		passwordTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
 		passwordTextArea.setMaximumSize(TEXTFIELD_DIMENSION);
@@ -103,7 +108,7 @@ public class ConnexionPanel extends JPanel {
 		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 		fieldsPanel.add(loginLabel);
 		fieldsPanel.add(loginTextArea);
-		//TODO checkBox "Remember me"
+		fieldsPanel.add(rememberCheckBox);
 		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 		fieldsPanel.add(passwordLabel);
 		fieldsPanel.add(passwordTextArea);
@@ -146,6 +151,8 @@ public class ConnexionPanel extends JPanel {
 				//ServerConnectionHandler
 			answer = context.launchConnection(Id, Mdp, false);
 			if (answer) {
+				rememberedId = rememberCheckBox.isSelected()? Id: null;
+				loginTextArea.setText(rememberedId);
 				context.changeWindow(WindowName.MENU);
 			}
 		}

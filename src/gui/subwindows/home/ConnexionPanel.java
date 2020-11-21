@@ -9,6 +9,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -51,6 +57,7 @@ public class ConnexionPanel extends JPanel {
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
 	private JTextField loginTextArea = new JTextField();
 	private JCheckBox rememberCheckBox = new JCheckBox("Se souvenir de Moi", true);
+	private final String PATH_LOGIN = "./log/loginLog.txt";
 	private String rememberedId = null;
 	private JTextField passwordTextArea = new JPasswordField();
 	private final Dimension FIELDS_FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
@@ -98,6 +105,7 @@ public class ConnexionPanel extends JPanel {
 		loginLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		loginTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
 		loginTextArea.setMaximumSize(TEXTFIELD_DIMENSION);
+		getSavedLogin();
 		loginTextArea.setText(rememberedId);
 		rememberCheckBox.setAlignmentX(CENTER_ALIGNMENT);
 		passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -152,6 +160,7 @@ public class ConnexionPanel extends JPanel {
 			answer = context.launchConnection(Id, Mdp, false);
 			if (answer) {
 				rememberedId = rememberCheckBox.isSelected()? Id: null;
+				setSavedLogin(rememberedId);
 				loginTextArea.setText(rememberedId);
 				context.changeWindow(WindowName.MENU);
 			}
@@ -171,6 +180,40 @@ public class ConnexionPanel extends JPanel {
 			if (answer) {
 				context.changeWindow(WindowName.MENU);
 			}
+		}
+	}
+	
+	private void getSavedLogin() {
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(PATH_LOGIN));
+			rememberedId = reader.readLine();
+			MainWindow.logger.info("Utilisateur enregistré trouvé: "+rememberedId);
+			reader.close();
+		} catch (FileNotFoundException e1) {
+			File file = new File(PATH_LOGIN);
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+		
+	}
+	
+	private void setSavedLogin(String rememberId) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(PATH_LOGIN);
+			if (! (rememberId == null || rememberId.equals(""))) {
+				writer.write(rememberId);
+				MainWindow.logger.info("Sauvegarde du nom de l'utilisateur: "+rememberId);
+			}
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

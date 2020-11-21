@@ -178,6 +178,9 @@ public class ConnexionPanel extends JPanel {
 				//ServerConnectionHandler
 			answer = context.launchConnection(Id, Mdp, true);
 			if (answer) {
+				rememberedId = rememberCheckBox.isSelected()? Id: null;
+				setSavedLogin(rememberedId);
+				loginTextArea.setText(rememberedId);
 				context.changeWindow(WindowName.MENU);
 			}
 		}

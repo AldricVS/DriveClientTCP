@@ -134,6 +134,7 @@ public class ServerConnectionHandler {
 			
 			//wait for recieving the server answer
 			/*#readline throws IOException if cannot read from server*/ 
+			//throw socketException when server shutdown
 			String answer = inputFlow.readLine();
 			logger.info(answer);
 			ProtocolExtractor extractor = new ProtocolExtractor(answer);

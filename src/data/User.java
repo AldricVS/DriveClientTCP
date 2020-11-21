@@ -15,6 +15,10 @@ public class User {
 		this.isAdmin = isAdmin;
 	}
 
+	public User (String string) {
+		this(string, false);
+	}
+
 	public String getName() {
 		return name;
 	}

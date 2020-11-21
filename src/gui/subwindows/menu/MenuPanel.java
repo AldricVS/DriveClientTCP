@@ -134,12 +134,14 @@ public class MenuPanel extends JPanel {
 		c.gridx = 0;
 		c.gridy = 2;
 		employeeListButton.setPreferredSize(BUTTON_SIZE);
+		employeeListButton.addActionListener(new ActionGoToEmployeeList());
 		buttonsPanel.add(employeeListButton, c);
 		
 		//Add Employee
 		c.gridx = 2;
 		c.gridy = 2;
 		addEmployeeButton.setPreferredSize(BUTTON_SIZE);
+		addEmployeeButton.addActionListener(new ActionAddEmployee());
 		buttonsPanel.add(addEmployeeButton, c);
 		
 	}
@@ -307,10 +309,14 @@ public class MenuPanel extends JPanel {
 				if (employeePassword.equals(employeeConfirmPassword)) {
 					//start protocol to add new product
 					Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
+					Protocol recievedProtocol;
 					try {
-						ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-						
-						//when it ends, change to product list
+						recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+						if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+							DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
+							return;
+						}
+						//when it ends, change to employee list
 						context.changeWindow(WindowName.EMPLOYEE_LIST);
 					} catch (IOException | InvalidProtocolException ex) {
 						ex.printStackTrace();

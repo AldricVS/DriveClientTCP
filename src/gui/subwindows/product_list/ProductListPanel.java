@@ -219,4 +219,5 @@ public class ProductListPanel extends JPanel {
 			context.changeWindow(WindowName.MENU);
 		}
 	}
+	
 }

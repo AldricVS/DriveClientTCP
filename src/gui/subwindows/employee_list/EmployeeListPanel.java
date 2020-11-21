@@ -5,6 +5,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -14,19 +18,31 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import org.apache.log4j.Logger;
+
+import data.Protocol;
+import data.User;
+import data.enums.ActionCodes;
+import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.components.DialogHandler;
 import gui.subwindows.popup_window.addEmployeePanel;
+import logger.LoggerUtility;
+import process.connection.ServerConnectionHandler;
+import process.protocol.ProtocolFactory;
+import process.protocol.ProtocolListExtractor;
 
 /**
- * 
+ * Panel showing all Employee, should only be access by Administrator
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  * @author Maxence
  */
 public class EmployeeListPanel extends JPanel {
-
-private MainWindow context;
+	public static Logger logger = LoggerUtility.getLogger(EmployeeListPanel.class, LoggerUtility.LOG_PREFERENCE);
+	private MainWindow context;
+	private ArrayList<User> listEmployee;
     
     /**
      * TITLE 
@@ -62,8 +78,6 @@ private MainWindow context;
 		setLayout(new BorderLayout());
 		
 		initTitle();
-		//InitList se déclenche plutot quand on charge la page
-		//initList();
 		initButtons();
 		
 		add(titlePanel, BorderLayout.NORTH);
@@ -78,18 +92,44 @@ private MainWindow context;
 		titlePanel.add(titlelabel);
 	}
 	
-	private void initList() {
+	public void initPanel(Protocol employeeList) {
+		extractFromProtocol(employeeList);
 		
-			//On transforme notre liste de produit en affichage
 		employeeListPanel = new JPanel();
 		employeeListPanel.setLayout(new BoxLayout(employeeListPanel, BoxLayout.PAGE_AXIS));
 		employeeListPanel.setPreferredSize(LIST_DIMENSION);
+		initEmployeePanel(listEmployee);
 		
 		listScrollPanel.setViewportView(employeeListPanel);
 		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
+	
+	private void extractFromProtocol(Protocol protocol) {
+		try {
+			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
+			listEmployee = extractor.extractEmployeeList();
+		} catch (InvalidProtocolException e) {
+			//show error to user and go back to menu
+			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
+			context.changeWindow(WindowName.MENU);
+		}
+	}
 
+	/**
+	 * Transform the Employee list received into a Panel
+	 * @param employeeList The list of all employee
+	 * @param size the amount of Employee
+	 */
+	private void initEmployeePanel(List<User> employeeList) {
+		//clear product panel in order to be sure that we start on a fresh start
+		employeeListPanel.removeAll();
+		for (Iterator<User> i = employeeList.iterator(); i.hasNext(); ) {
+			User u = i.next();
+			employeeListPanel.add(new EmployeePanel(this, u, EMPLOYEE_LIST_DIMENSION));
+		}
+	}
+	
 	private void initButtons() {
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 		buttonsPanel.setPreferredSize(BUTTONS_DIMENSION);
@@ -114,12 +154,29 @@ private MainWindow context;
 	class ActionAddEmployee implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			addEmployeePanel addEmployeePopup = new addEmployeePanel();
-			addEmployeePopup.getPopup();
-			String employeeName = addEmployeePopup.getNameEmployee();
-			String employeePassword = addEmployeePopup.getPassword();
-			String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
-			//start protocol to add new employee
-			context.changeWindow(WindowName.EMPLOYEE_LIST);
+			boolean result;
+			result = addEmployeePopup.getPopup();
+			if (result) {
+				String employeeName = addEmployeePopup.getNameEmployee();
+				String employeePassword = addEmployeePopup.getPassword();
+				String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
+				if (employeePassword.equals(employeeConfirmPassword)) {
+					//start protocol to add new product
+					Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
+					try {
+						ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+						
+						context.changeWindow(WindowName.EMPLOYEE_LIST);
+					} catch (IOException | InvalidProtocolException ex) {
+						ex.printStackTrace();
+						DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+					}
+				}
+				else {
+					DialogHandler.showErrorDialog(context, "Erreur", "Validation du Mot de Passe incorrect");
+				}
+			}
+			//has the popup was closed, nothing happen
 		}
 	}
 	
@@ -128,4 +185,33 @@ private MainWindow context;
 			context.changeWindow(WindowName.MENU);
 		}
 	}
+    /**
+     * Refresh the panel asking to the server the product list
+     */
+	public void refreshPanel() {
+		boolean isRefreshValid = false;
+		try {
+			Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(ProtocolFactory.createGetListEmployeeProtocol());
+			if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+				extractFromProtocol(protocolRecieved);
+				initEmployeePanel(listEmployee);
+				listScrollPanel.setViewportView(employeeListPanel);
+				repaint();
+				employeeListPanel.repaint();
+				isRefreshValid = true;
+			}
+		} catch (IOException | InvalidProtocolException e) {
+			//we can't do anymore here, go back to menu
+			DialogHandler.showErrorDialog(context, "Rafraichissement impossible", "Impossible de récupérer la liste des employés, retour au menu.");
+			e.printStackTrace();
+			logger.error("Can't retrieve information from string : " + e.getMessage());
+		}
+		
+		//if something bad happens, go to menu
+		if(!isRefreshValid) {
+			context.changeWindow(WindowName.MENU);
+		}
+	}
+	
+	
 }

@@ -182,7 +182,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void initEmployeeList(Protocol employeeList) {
-		//employeeListPanel.initList(employeeList);
+		employeeListPanel.initPanel(employeeList);
 	}
 	
 }

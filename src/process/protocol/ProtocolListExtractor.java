@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import data.Order;
 import data.Product;
 import data.Protocol;
+import data.User;
 import exceptions.InvalidProtocolException;
 import gui.components.DialogHandler;
 import logger.LoggerUtility;
@@ -26,9 +27,12 @@ public class ProtocolListExtractor{
 	
 	private static final String ERROR_PRODUCT_LIST = "La liste des produits n'est pas lisible";
 	private static final String ERROR_ORDER_LIST = "La liste des commandes n'est pas lisible";
+	private static final String ERROR_EMPLOYEE_LIST = "La liste des employés n'est pas lisible";
 	
 	private static final int NUMBER_ITEMS_PER_PRODUCT = 5;
 	private static final int NUMBER_ITEMS_PER_ORDER = 6;
+	private static final int NUMBER_ITEMS_PER_EMPLOYEE = 1;
+
 	
 	Protocol listProtocol;
 
@@ -48,7 +52,7 @@ public class ProtocolListExtractor{
 		
 		//Note, on a max-1 car il y a aussi le nombre de produit transmis
 		if (max-1 != numberOfProducts) {
-			throw new InvalidProtocolException("Une erreur dans le compte des produits à été trouvée.");
+			throw new InvalidProtocolException("Une erreur dans le compte des produits a été trouvée.");
 		}
 		
 		logger.info("== Listage des "+numberOfProducts+" produits recus ==");
@@ -91,7 +95,7 @@ public class ProtocolListExtractor{
 		int numberOfOrders = Integer.parseInt(listProtocol.getOptionsElement(0));
 		
 		if (max-1 != numberOfOrders) {
-			throw new InvalidProtocolException("Une erreur dans le compte des commandes à été trouvée.");
+			throw new InvalidProtocolException("Une erreur dans le compte des commandes a été trouvée.");
 		}
 		
 		logger.info("== Listage des "+numberOfOrders+" commandes recus ==");
@@ -117,5 +121,46 @@ public class ProtocolListExtractor{
 		}
 		logger.info("== Fin de la liste des commandes ==");
 		return listOrder;
+	}
+	
+	/**
+	 * Extract all employee recieved from the protocol.
+	 * @return a list containg all orders from the protocol
+	 * @throws InvalidProtocolException if product list is not well-formed (it can miss a sub item for instance, or the number)
+	 */
+	public ArrayList<User> extractEmployeeList() throws InvalidProtocolException {
+		ArrayList<User> listUser = new ArrayList<User>();
+		int max = listProtocol.getOptionsListSize();
+		int numberOfEmployee = Integer.parseInt(listProtocol.getOptionsElement(0));
+		
+		if (max-1 != numberOfEmployee) {
+			throw new InvalidProtocolException("Une erreur dans le compte des employés a été trouvée.");
+		}
+		
+		logger.info("== Listage des "+numberOfEmployee+" employés recus ==");
+		String employeeString = "";
+		try {
+			for (int i = 1; i < max; i++) {
+				employeeString = listProtocol.getOptionsElement(i);
+				logger.info(employeeString);
+				String[] employee = employeeString.split(";");
+				/*
+				if(employee.length != NUMBER_ITEMS_PER_EMPLOYEE) {
+					logger.error("Employee list recieved is not valid : the string \"" + employeeString +"\" is not well-formed.");
+					throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
+				}
+				*/
+				listUser.add(new User(employee[0]));
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			logger.error("Employee list recieved is not valid : the string \"" + employeeString +"\" is not well-formed.");
+			throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
+		}catch (NumberFormatException e) {
+			logger.error("A number cannot be readed in the line \"" + employeeString + "\"");
+			throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
+		}
+		logger.info("== Fin de la liste des employés ==");
+		return listUser;
 	}
 }

@@ -25,7 +25,7 @@ public class EmployeePanel extends JPanel {
 	 * @param product the product shown in this row
 	 * @param productDimension Dimension of the Panel
 	 */
-	public EmployeePanel(User employee, Dimension productDimension) {
+	public EmployeePanel(EmployeeListPanel context, User employee, Dimension productDimension) {
 		this.productDimension = productDimension;
 		fieldDimension = new Dimension(productDimension.width / 3, productDimension.height / 6);
 		buttonDimension = new Dimension(productDimension.width / 4, 2 * productDimension.height / 3);

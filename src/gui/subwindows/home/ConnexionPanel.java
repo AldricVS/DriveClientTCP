@@ -57,7 +57,7 @@ public class ConnexionPanel extends JPanel {
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
 	private JTextField loginTextArea = new JTextField();
 	private JCheckBox rememberCheckBox = new JCheckBox("Se souvenir de Moi", true);
-	private final String PATH_LOGIN = "./log/loginLog.txt";
+	private final String PATH_LOGIN = "./data/loginLog.txt";
 	private String rememberedId = null;
 	private JTextField passwordTextArea = new JPasswordField();
 	private final Dimension FIELDS_FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);

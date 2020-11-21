@@ -254,10 +254,16 @@ public class MenuPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//receive protocol to receive list of order
 			Protocol protocol = ProtocolFactory.createGetListOrderProtocol();
-			Protocol orderList = null;
+			Protocol recievedProtocol = null;
 			try {
-				orderList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-				context.initListOrder(orderList);
+				recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+				if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+					DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
+					return;
+				}
+				//charge order list
+				context.initListOrder(recievedProtocol);
+				//go to order page
 				context.changeWindow(WindowName.ORDER_LIST);
 			} catch (IOException | InvalidProtocolException ex) {
 				ex.printStackTrace();
@@ -269,10 +275,18 @@ public class MenuPanel extends JPanel {
 	class ActionGoToEmployeeList implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Protocol protocol = ProtocolFactory.createGetListEmployeeProtocol();
-			Protocol employeeList = null;
+			Protocol recievedProtocol = null;
 			try {
-				employeeList = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-				context.initEmployeeList(employeeList);
+				recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+				if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+					DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
+					return;
+				}
+				if(recievedProtocol.getOptionsListSize() < 2) {
+					MainWindow.logger.error("protocol recieved have no employe");
+					throw new InvalidProtocolException("Aucun Employe n'a pu être trouvé.");
+				}
+				context.initEmployeeList(recievedProtocol);
 				context.changeWindow(WindowName.EMPLOYEE_LIST);
 			} catch (IOException | InvalidProtocolException ex) {
 				ex.printStackTrace();

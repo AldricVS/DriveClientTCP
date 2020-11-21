@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -48,7 +49,7 @@ public class ConnexionPanel extends JPanel {
 	private JLabel loginLabel = new JLabel("Identifiant", SwingConstants.CENTER);
 	private JLabel passwordLabel = new JLabel("Mot de passe", SwingConstants.CENTER);
 	private JTextField loginTextArea = new JTextField();
-	private JTextField passwordTextArea = new JTextField();
+	private JTextField passwordTextArea = new JPasswordField();
 	private final Dimension FIELDS_FILLER = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT / 8);
 	
 	/**
@@ -102,6 +103,7 @@ public class ConnexionPanel extends JPanel {
 		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 		fieldsPanel.add(loginLabel);
 		fieldsPanel.add(loginTextArea);
+		//TODO checkBox "Remember me"
 		fieldsPanel.add(Box.createRigidArea(FIELDS_FILLER));
 		fieldsPanel.add(passwordLabel);
 		fieldsPanel.add(passwordTextArea);
@@ -139,6 +141,7 @@ public class ConnexionPanel extends JPanel {
 				//Récupérer combo Id / mdp
 			String Id = loginTextArea.getText();
 			String Mdp = passwordTextArea.getText();
+			passwordTextArea.setText(null);
 			boolean answer;
 				//ServerConnectionHandler
 			answer = context.launchConnection(Id, Mdp, false);
@@ -154,6 +157,7 @@ public class ConnexionPanel extends JPanel {
 				//Récupérer combo Id / mdp
 			String Id = loginTextArea.getText();
 			String Mdp = passwordTextArea.getText();
+			passwordTextArea.setText(null);
 			boolean answer;
 				//ServerConnectionHandler
 			answer = context.launchConnection(Id, Mdp, true);

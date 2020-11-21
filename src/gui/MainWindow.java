@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import gui.components.DialogHandler;
 import gui.subwindows.employee_list.EmployeeListPanel;
 import gui.subwindows.home.ConnexionPanel;
 import gui.subwindows.menu.MenuPanel;
@@ -124,15 +125,16 @@ public class MainWindow extends JFrame {
 	 * @return true if connection has been done successfully
 	 */
 	public boolean launchConnection(String id, String mdp, boolean asAdmin) {
+		//send a protocol
+		Protocol connectProtocol;
+		Protocol answer = null;
 		try {
 			//start connection with the server
 			ServerConnectionHandler.getInstance().initConnection();
-			//send a protocol
-			Protocol tryConnect;
-			tryConnect = ProtocolFactory.createConnectionProtocol(id, mdp, asAdmin);
+			connectProtocol = ProtocolFactory.createConnectionProtocol(id, mdp, asAdmin);
 			
-			logger.info("Connection attempt: " + tryConnect.toString());
-			Protocol answer = ServerConnectionHandler.getInstance().sendProtocolMessage(tryConnect);
+			logger.info("Connection attempt: " + connectProtocol.toString());
+			answer = ServerConnectionHandler.getInstance().sendProtocolMessage(connectProtocol);
 			//check if we got a successful actionCode 
 			ProtocolExtractor extractor = new ProtocolExtractor(answer.toString());
 			extractor.assertActionCodeValid(ActionCodes.SUCESS);
@@ -155,6 +157,7 @@ public class MainWindow extends JFrame {
 		}
 		//Send a disconnect message to the server
 		disconnect();
+		DialogHandler.showErrorDialogFromProtocol(this, answer);
 		return false;
 	}
 	
@@ -164,6 +167,7 @@ public class MainWindow extends JFrame {
 	public void disconnect() {
 		if(ServerConnectionHandler.getInstance().isConnected()) {
 			menuPanel.disconnectAdmin();
+			//employeeListPanel.clear(); -> Vide la liste d'employe
 			ServerConnectionHandler.getInstance().disconnect();
 			logger.info("=== DISCONNECTED ===");
 		}

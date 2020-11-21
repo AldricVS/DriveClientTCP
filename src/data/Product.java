@@ -53,7 +53,7 @@ public class Product {
 		return promotion;
 	}
 	
-	public int getIdProduct() {
+	public int getId() {
 		return idProduct;
 	}
 	

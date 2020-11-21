@@ -113,6 +113,7 @@ public class ProductPanel extends JPanel {
 		add(addPromotionButton);
 
 		deleteProductButton.setPreferredSize(buttonDimension);
+		deleteProductButton.addActionListener(new DeleteProductListener());
 		add(deleteProductButton);
 	}
 
@@ -122,33 +123,87 @@ public class ProductPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			ModifyProductQuantityOption dialog = new ModifyProductQuantityOption(context, product);
 			if (dialog.showPopUp()) {
+
 				Protocol protocolToSend;
 				// check which action user choose
 				if (dialog.getUserActionChoosen() == ModifyProductQuantityOption.ADD_QUANTITY_OPTION) {
-					protocolToSend = ProtocolFactory.createAddProductQuantityProtocol(product.getIdProduct(),
-							dialog.getAddQuantity());
+					// a little confirmation before doing it
+					int quantityToAdd = dialog.getAddQuantity();
+					if (!DialogHandler.showConfirmDialog(context, "Modifier ?",
+							"Voulez vous vraiment ajouter " + quantityToAdd + " " + product.getName() + " ?")) {
+						// user don't want to do this, return
+						return;
+					}
+					protocolToSend = ProtocolFactory.createAddProductQuantityProtocol(product.getId(), quantityToAdd);
 				} else {
-					protocolToSend = ProtocolFactory.createRemoveProductQuantityProtocol(product.getIdProduct(),
-							dialog.getRemoveQuantity());
+					int quantityToRemove = dialog.getRemoveQuantity();
+					if (!DialogHandler.showConfirmDialog(context, "Modifier ?",
+							"Voulez vous vraiment enlever " + quantityToRemove + " " + product.getName() + " ?")) {
+						// user don't want to do this, return
+						return;
+					}
+					protocolToSend = ProtocolFactory.createRemoveProductQuantityProtocol(product.getId(),
+							quantityToRemove);
 				}
 
 				// send this protocol to the server
 				try {
-					Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocolToSend);
-					if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
-						DialogHandler.showInformationDialog(context, "Produit modifié", "La quantité du produit a été modifiée");
-						//refresh the page to see the modification
+					Protocol protocolRecieved = ServerConnectionHandler.getInstance()
+							.sendProtocolMessage(protocolToSend);
+					if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+						DialogHandler.showInformationDialog(context, "Produit modifié",
+								"La quantité du produit a été modifiée");
+						// refresh the page to see the modification
 						context.refreshPanel();
-					}else {
+					} else {
 						DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
 					}
 				} catch (IOException | InvalidProtocolException ex) {
+					// very unlikely to happen in real scenarios
 					ex.printStackTrace();
-					ProductListPanel.logger.error("Modify product quantity string isnot readable : " + ex.getMessage());
-					DialogHandler.showErrorDialog(context, "Erreur", "Erreur lors de la réception du message du serveur");
+					ProductListPanel.logger
+							.error("Modify product quantity string is not readable : " + ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Erreur",
+							"Erreur lors de la réception du message du serveur");
 				}
 			}
 		}
 
+	}
+
+	class DeleteProductListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String productName = product.getName();
+			boolean wantToDelete = DialogHandler.showConfirmDialog(context, "Supprimer " + productName + " ?",
+					"Voulez vous vraiment supprimer le produit \"" + productName
+							+ "\".\nCela le fera disparaitre définitivement.");
+
+			if (wantToDelete) {
+				String idProduct = String.valueOf(product.getId());
+				Protocol protocolToSend = ProtocolFactory.createDeleteProductProtocol(idProduct);
+
+				// send this protocol to the server
+				try {
+					ServerConnectionHandler instance = ServerConnectionHandler.getInstance();
+					Protocol protocolRecieved = instance.sendProtocolMessage(protocolToSend);
+					if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+						DialogHandler.showInformationDialog(context, "Produit supprimé",
+								"Le produit a été supprimé avec succès");
+						// refresh the page to see the modification
+						context.refreshPanel();
+					} else {
+						DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
+					}
+				} catch (IOException | InvalidProtocolException ex) {
+					ex.printStackTrace();
+					ProductListPanel.logger
+							.error("Remove product quantity string is not readable : " + ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Erreur",
+							"Erreur lors de la réception du message du serveur");
+				}
+
+			}
+		}
 	}
 }

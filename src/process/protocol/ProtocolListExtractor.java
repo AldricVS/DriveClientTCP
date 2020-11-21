@@ -47,8 +47,15 @@ public class ProtocolListExtractor{
 	 */
 	public ArrayList<Product> extractProductList() throws InvalidProtocolException {
 		ArrayList<Product> listProduct = new ArrayList<Product>();
+		int numberOfProducts = 0;
 		int max = listProtocol.getOptionsListSize();
-		int numberOfProducts = Integer.parseInt(listProtocol.getOptionsElement(0));
+		try {
+			numberOfProducts = Integer.parseInt(listProtocol.getOptionsElement(0));
+		}catch(NumberFormatException e) {
+			logger.error(listProtocol.getOptionsElement(0) + " cannot be changed to an integer.");
+			throw new InvalidProtocolException("Une erreur dans le compte des produits a été trouvée.");
+		}
+		
 		
 		//Note, on a max-1 car il y a aussi le nombre de produit transmis
 		if (max-1 != numberOfProducts) {

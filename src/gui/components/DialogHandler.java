@@ -56,7 +56,7 @@ public class DialogHandler {
 	 * @param content the message to send to the user
 	 * @return {@code true} if user choose "Yes" option, {@code false} else
 	 */
-	public static boolean showChoiceDialog(Component parentComponent, String title, String content) {
+	public static boolean showConfirmDialog(Component parentComponent, String title, String content) {
 		int answer = JOptionPane.showConfirmDialog(parentComponent, content, title, JOptionPane.YES_NO_OPTION);
 		return answer == JOptionPane.YES_OPTION;
 	}

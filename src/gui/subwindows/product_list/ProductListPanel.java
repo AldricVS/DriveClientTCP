@@ -43,7 +43,7 @@ import process.protocol.ProtocolListExtractor;
  * @author Maxence Hennekein
  */
 public class ProductListPanel extends JPanel {
-	private static Logger logger = LoggerUtility.getLogger(ProductListPanel.class, LoggerUtility.LOG_PREFERENCE);
+	public static Logger logger = LoggerUtility.getLogger(ProductListPanel.class, LoggerUtility.LOG_PREFERENCE);
 	private MainWindow context;
 	private ArrayList<Product> listProduct;
 	
@@ -141,7 +141,7 @@ public class ProductListPanel extends JPanel {
 		productListPanel.removeAll();
 		for (Iterator<Product> i = productList.iterator(); i.hasNext(); ) {
 			Product p = i.next();
-			productListPanel.add(new ProductPanel(p, PRODUCT_LIST_DIMENSION));
+			productListPanel.add(new ProductPanel(this, p, PRODUCT_LIST_DIMENSION));
 		}
 	}
 
@@ -219,6 +219,7 @@ public class ProductListPanel extends JPanel {
 			//we can't do anymore here, go back to menu
 			DialogHandler.showErrorDialog(context, "Rafraichissement impossible", "Impossible de récupérer la liste des produits, retour au menu.");
 			e.printStackTrace();
+			logger.error("Can't retrieve information from string : " + e.getMessage());
 		}
 		
 		//if something bad happens, go to menu

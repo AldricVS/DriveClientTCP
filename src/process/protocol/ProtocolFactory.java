@@ -41,18 +41,18 @@ public class ProtocolFactory {
 		return protocol;
 	}
 	
-	public static Protocol createAddProductQuantityProtocol(String id, String quantity) {
+	public static Protocol createAddProductQuantityProtocol(int id, int quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.ADD_PRODUCT_QUANTITY);
-		protocol.appendOptions(id, quantity);
+		protocol.appendOptions(String.valueOf(id), String.valueOf(quantity));
 		logger.info(protocol.toString());
 		return protocol;
 	}
 	
-	public static Protocol createRemoveProductQuantityProtocol(String id, String quantity) {
+	public static Protocol createRemoveProductQuantityProtocol(int id, int quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.REMOVE_PRODUCT_QUANTITY);
-		protocol.appendOptions(id, quantity);
+		protocol.appendOptions(String.valueOf(id), String.valueOf(quantity));
 		logger.info(protocol.toString());
 		return protocol;
 	}

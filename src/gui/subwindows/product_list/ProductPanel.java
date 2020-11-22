@@ -13,12 +13,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import com.sun.net.httpserver.Authenticator.Success;
+
 import data.Product;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
 import gui.components.DialogHandler;
 import gui.subwindows.popup_window.ModifyProductQuantityOption;
+import gui.subwindows.popup_window.ModifyPromotionOption;
 import process.connection.ServerConnectionHandler;
 import process.protocol.ProtocolFactory;
 
@@ -39,7 +42,7 @@ public class ProductPanel extends JPanel {
 	private JTextField productPriceField = new JTextField();
 	private JTextField productQuantityField = new JTextField();
 	private JButton changeQuantityButton = new JButton("Modifier Quantité");
-	private JButton addPromotionButton = new JButton("Ajouter une promotion");
+	private JButton addPromotionButton = new JButton("Modifier la promotion");
 	private JButton deleteProductButton = new JButton("Supprimer le produit");
 
 	/**
@@ -110,6 +113,7 @@ public class ProductPanel extends JPanel {
 		add(changeQuantityButton);
 
 		addPromotionButton.setPreferredSize(buttonDimension);
+		addPromotionButton.addActionListener(new ModifyPromotionListener());
 		add(addPromotionButton);
 
 		deleteProductButton.setPreferredSize(buttonDimension);
@@ -165,6 +169,71 @@ public class ProductPanel extends JPanel {
 							.error("Modify product quantity string is not readable : " + ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur",
 							"Erreur lors de la réception du message du serveur");
+				}
+			}
+		}
+
+	}
+
+	class ModifyPromotionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			BigDecimal oldPromotion = product.getPromotion();
+			String successString = "";
+
+			ModifyPromotionOption dialog = new ModifyPromotionOption(context, product);
+			if (dialog.showPopUp()) {
+				/*create the protocol depending on the option choose by user*/
+				Protocol protocolToSend = null;
+				// we have 2 cases here : user want to add/modify promotion, or delete it
+				if (dialog.getUserActionChoosen() == ModifyPromotionOption.ADD_PROMOTION_OPTION) {
+					String confirmationString;
+					if (product.hasPromotion()) {
+						confirmationString = "Voulez-vous vraiment remplacer l'ancienne promotion (montant : "
+								+ oldPromotion + ") ?";
+						successString = "Promotion modifiée avec succès";
+					} else {
+						confirmationString = "Voulez-vous vraiment ajouter une nouvelle promotion à ce produit ?";
+						successString = "Promotion ajoutée avec succès";
+					}
+
+					if (DialogHandler.showConfirmDialog(context, "Confirmation", confirmationString)) {
+						String idString = String.valueOf(product.getId());
+						BigDecimal newPromotion = dialog.getPromotionAmount();
+						protocolToSend = ProtocolFactory.createAddPromotionProtocol(idString, newPromotion.toString());
+					}
+
+				} else if (dialog.getUserActionChoosen() == ModifyPromotionOption.REMOVE_PROMOTION_OPTION) {
+					// if no promotion exists, nothing to do
+					if (product.hasPromotion()) {
+						String content = "Voulez-vous vraiment supprimer cette promotion ?";
+						if (DialogHandler.showConfirmDialog(context, "Supprimer", content)) {
+							String idString = String.valueOf(product.getId());
+							protocolToSend = ProtocolFactory.createRemovePromotionProtocol(idString);
+							successString = "Promotion supprimée avec succès";
+						}
+					}
+				}
+				
+				//if we have created a protocol in the process, send it to the server
+				if(protocolToSend != null) {
+					try {
+						Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocolToSend);
+						if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+							//show message depending on the action before
+							DialogHandler.showConfirmDialog(context, "Succès", successString);
+							context.refreshPanel();
+						}else {
+							DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
+						}
+					} catch (IOException | InvalidProtocolException ex) {
+						ex.printStackTrace();
+						ProductListPanel.logger
+								.error("return code string is not readable : " + ex.getMessage());
+						DialogHandler.showErrorDialog(context, "Erreur",
+								"Erreur lors de la réception du message du serveur");
+					}
 				}
 			}
 		}

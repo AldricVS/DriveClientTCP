@@ -19,7 +19,7 @@ import javax.swing.event.ChangeListener;
 import data.Product;
 
 /**
- * Dialog that asks to user a change in the 
+ * Dialog that asks to user a change in the quantity of a specific product
  * 
  * @author Aldric Vitali Silvestre <aldric.vitali@outlook.fr>
  */

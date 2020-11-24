@@ -7,6 +7,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 
@@ -24,8 +25,8 @@ public class addEmployeePanel extends JOptionPane{
 	//TextArea
 	//private static int FIELD_DIMENSION = GuiConstants.;
 	JTextField fieldName = new JTextField(20);
-	JTextField fieldPassword = new JTextField(30);
-	JTextField fieldConfirmPassword = new JTextField(30);
+	JTextField fieldPassword = new JPasswordField(30);
+	JTextField fieldConfirmPassword = new JPasswordField(30);
 
 	private static String[] options = {"Ajouter", "Annuler"};
 	
@@ -67,12 +68,23 @@ public class addEmployeePanel extends JOptionPane{
 	}
 	
 	/**
-	 * 
+	 * Return a popup define by this Panel
 	 * @return true if an Element will be added, false if canceled
 	 */
 	public boolean getPopup() {
 		int answer;
 		answer = showOptionDialog(null, addEmployeePanel, "Ajouter un Employe", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		if ((answer == JOptionPane.NO_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean getChangePasswordPopup(String employeeName) {
+		fieldName.setText(employeeName);
+		fieldName.setEditable(false);
+		int answer;
+		answer = showOptionDialog(null, addEmployeePanel, "Modifier le Mot de Passe", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		if ((answer == JOptionPane.NO_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
 			return false;
 		}

@@ -110,10 +110,7 @@ public class ProductListPanel extends JPanel {
 			listScrollPanel.setViewportView(productListPanel);
 			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-			// if we are here, no errors occured, we can switch window
-			context.changeWindow(WindowName.PRODUCT_LIST);
-
+			
 		} catch (InvalidProtocolException e) {
 			// show error to user and go back to menu
 			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());

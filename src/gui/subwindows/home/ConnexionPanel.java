@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.components.DialogHandler;
 
 /**
  * First panel of the application. Ask for user to connect with login and password.
@@ -188,49 +189,63 @@ public class ConnexionPanel extends JPanel {
 	
 	private void getSavedLogin() {
 		BufferedReader reader;
+		File file = new File(PATH_LOGIN);
 		try {
-			reader = new BufferedReader(new FileReader(PATH_LOGIN));
-			rememberedId = reader.readLine();
-			MainWindow.logger.info("Utilisateur enregistré trouvé: "+rememberedId);
-			reader.close();
+			if (file.exists()) {
+				reader = new BufferedReader(new FileReader(file));
+				rememberedId = reader.readLine();
+				MainWindow.logger.info("Utilisateur enregistré trouvé: "+rememberedId);
+				reader.close();
+			}
+			else {
+				//File was not created, try to create a new one
+				setSavedLogin("");
+			}
 		} catch (FileNotFoundException e1) {
+			MainWindow.logger.error("Fichier où est sauvegardé le login enregistré non trouvé, création...");
 			setSavedLogin("");
 		} catch (IOException e2) {
-			e2.printStackTrace();
+			MainWindow.logger.error("Impossible d'ouvrir le fichier " + file.getAbsolutePath());
+			DialogHandler.showErrorDialog(context, "Erreur", "Impossible d'ouvrir le fichier où est sauvegardé votre login: " + file.getAbsolutePath());
 		}
 		
 	}
 	
 	private void setSavedLogin(String rememberId) {
 		FileWriter writer;
+		File file = new File(PATH_LOGIN);
 		try {
-			writer = new FileWriter(PATH_LOGIN);
-			if (! (rememberId == null || rememberId.equals(""))) {
-				writer.write(rememberId);
-				MainWindow.logger.info("Sauvegarde du nom de l'utilisateur: "+rememberId);
-			}
-			writer.close();
-		} catch (FileNotFoundException e1) {
-			String[] path = PATH_LOGIN.split("/");
-			String completePath = path[0];
-			for (int i = 1; (i < path.length - 1) && (i < 5); i++) {
-				completePath += "/" + path[i];
-			}
-			File dir = new File(completePath);
-			dir.mkdirs();
-
-			try {
-				writer = new FileWriter(PATH_LOGIN);
+			if (file.exists()) {
+				writer = new FileWriter(file);
 				if (! (rememberId == null || rememberId.equals(""))) {
 					writer.write(rememberId);
 					MainWindow.logger.info("Sauvegarde du nom de l'utilisateur: "+rememberId);
 				}
 				writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			}
+			else {
+				//try to create all dirs to file
+				String[] path = PATH_LOGIN.split("/");
+				String completePath = path[0];
+				for (int i = 1; (i < path.length - 1) && (i < 5); i++) {
+					completePath += "/" + path[i];
+				}
+				File dir = new File(completePath);
+				dir.mkdirs();
+				
+				//lets try again
+				if (file.exists()) {
+					writer = new FileWriter(file);
+					if (! (rememberId == null || rememberId.equals(""))) {
+						writer.write(rememberId);
+						MainWindow.logger.info("Sauvegarde du nom de l'utilisateur: "+rememberId);
+					}
+					writer.close();
+				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			MainWindow.logger.error("Erreur dans la création du fichier " + file.getAbsolutePath());
+			DialogHandler.showErrorDialog(context, "Erreur", "Impossible d'ouvrir le fichier où est sauvegardé votre login: " + file.getAbsolutePath());
 		}
 	}
 	

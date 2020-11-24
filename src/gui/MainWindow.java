@@ -153,11 +153,16 @@ public class MainWindow extends JFrame {
 			logger.error("Erreur dans la formulation d'un Protocol");
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		//Send a disconnect message to the server
 		disconnect();
-		DialogHandler.showErrorDialogFromProtocol(this, answer);
+		if (answer != null) {
+			DialogHandler.showErrorDialogFromProtocol(this, answer);
+		}
+		else {
+			DialogHandler.showErrorDialog(this, "Erreur", "Impossible de lancer la connexion avec le serveur");
+		}
 		return false;
 	}
 	

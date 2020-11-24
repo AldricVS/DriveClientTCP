@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
@@ -95,7 +96,7 @@ public class ServerConnectionHandler {
 	 * Close the connection with the server. <b>This method must be called before exiting app</b>. 
 	 * @return If connection is closed properly or not
 	 */
-	public boolean closeConnection() {
+	private boolean closeConnection() {
 		if (isConnected) {
 			try {
 				outputFlow.close();
@@ -121,7 +122,7 @@ public class ServerConnectionHandler {
 	 * @return the string that server send back
 	 * @throws IOException if cannot read what server answered
 	 */
-	public Protocol sendProtocolMessage(Protocol protcol) throws IOException, InvalidProtocolException{
+	public Protocol sendProtocolMessage(Protocol protcol) throws IOException, InvalidProtocolException {
 		if (isConnected) {
 			logger.info("Send message to server.");
 			
@@ -135,10 +136,15 @@ public class ServerConnectionHandler {
 			//wait for recieving the server answer
 			/*#readline throws IOException if cannot read from server*/ 
 			//throw socketException when server shutdown
-			String answer = inputFlow.readLine();
-			logger.info(answer);
-			ProtocolExtractor extractor = new ProtocolExtractor(answer);
-			return extractor.getProtocol();
+			try {
+				String answer = inputFlow.readLine();
+				logger.info(answer);
+				ProtocolExtractor extractor = new ProtocolExtractor(answer);
+				return extractor.getProtocol();
+			} catch (SocketException ex) {
+				//throw SocketException when server connexion was closed without asking
+				throw new IOException("Délai d'attente dépassé");
+			}
 		}
 		else {
 			logger.error("Connection hasn't started yet");

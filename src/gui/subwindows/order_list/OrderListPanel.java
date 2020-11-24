@@ -30,6 +30,7 @@ import exceptions.InvalidProtocolException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
+import gui.components.DialogHandler;
 import logger.LoggerUtility;
 import process.protocol.ProtocolListExtractor;
 
@@ -90,27 +91,29 @@ public class OrderListPanel extends JPanel {
 	}
 	
 	public void initPanel(Protocol protocol) {
-		extractFromProtocol(protocol);
-		
-		//On transforme notre liste de produit en affichage
-		orderListPanel = new JPanel();
-		orderListPanel.setLayout(new BoxLayout(orderListPanel, BoxLayout.PAGE_AXIS));
-		orderListPanel.setMinimumSize(LIST_DIMENSION);
-		initProductPanel(listOrder);
-		
-		listScrollPanel.setViewportView(orderListPanel);
-		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	}
-	
-	private void extractFromProtocol(Protocol protocol) {
 		try {
-			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
-			listOrder = extractor.extractOrderList();
+			extractFromProtocol(protocol);
+			
+			//On transforme notre liste de produit en affichage
+			orderListPanel = new JPanel();
+			orderListPanel.setLayout(new BoxLayout(orderListPanel, BoxLayout.PAGE_AXIS));
+			orderListPanel.setMinimumSize(LIST_DIMENSION);
+			initProductPanel(listOrder);
+			
+			listScrollPanel.setViewportView(orderListPanel);
+			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		} catch (InvalidProtocolException e) {
 			logger.error("Erreur dans l'extraction du Protocol");
-			e.printStackTrace();
+			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
+			//return to Menu
+			context.changeWindow(WindowName.MENU);
 		}
+	}
+	
+	private void extractFromProtocol(Protocol protocol) throws InvalidProtocolException {
+		ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
+		listOrder = extractor.extractOrderList();
 	}
 	
 	private void initProductPanel(List<Order> productList) {

@@ -51,9 +51,12 @@ public class ProtocolListExtractor{
 		int max = listProtocol.getOptionsListSize();
 		try {
 			numberOfProducts = Integer.parseInt(listProtocol.getOptionsElement(0));
-		}catch(NumberFormatException e) {
+		} catch(NumberFormatException ex1) {
 			logger.error(listProtocol.getOptionsElement(0) + " cannot be changed to an integer.");
 			throw new InvalidProtocolException("Une erreur dans le compte des produits a été trouvée.");
+		} catch (IndexOutOfBoundsException ex2) {
+			logger.error("Received product list cannot be used");
+			throw new InvalidProtocolException("Impossible de lancer le compte des produits.");
 		}
 		
 		
@@ -99,7 +102,16 @@ public class ProtocolListExtractor{
 	public ArrayList<Order> extractOrderList() throws InvalidProtocolException {
 		ArrayList<Order> listOrder = new ArrayList<Order>();
 		int max = listProtocol.getOptionsListSize();
-		int numberOfOrders = Integer.parseInt(listProtocol.getOptionsElement(0));
+		int numberOfOrders = 0;
+		try {
+			numberOfOrders = Integer.parseInt(listProtocol.getOptionsElement(0));
+		} catch(NumberFormatException ex1) {
+			logger.error(listProtocol.getOptionsElement(0) + " cannot be changed to an integer.");
+			throw new InvalidProtocolException("Une erreur dans le compte des commandes a été trouvée.");
+		} catch (IndexOutOfBoundsException ex2) {
+			logger.error("Received order list cannot be used");
+			throw new InvalidProtocolException("Impossible de lancer le compte des commandes.");
+		}
 		
 		if (max-1 != numberOfOrders) {
 			throw new InvalidProtocolException("Une erreur dans le compte des commandes a été trouvée.");
@@ -138,13 +150,22 @@ public class ProtocolListExtractor{
 	public ArrayList<User> extractEmployeeList() throws InvalidProtocolException {
 		ArrayList<User> listUser = new ArrayList<User>();
 		int max = listProtocol.getOptionsListSize();
-		int numberOfEmployee = Integer.parseInt(listProtocol.getOptionsElement(0));
+		int numberOfEmployee = 0;
+		try {
+			numberOfEmployee = Integer.parseInt(listProtocol.getOptionsElement(0));
+		} catch(NumberFormatException e) {
+			logger.error(listProtocol.getOptionsElement(0) + " cannot be changed to an integer.");
+			throw new InvalidProtocolException("Une erreur dans le compte des employés a été trouvée.");
+		} catch (IndexOutOfBoundsException ex2) {
+			logger.error("Received employee list cannot be used");
+			throw new InvalidProtocolException("Impossible de lancer le compte des employés.");
+		}
 		
 		if (max-1 != numberOfEmployee) {
 			throw new InvalidProtocolException("Une erreur dans le compte des employés a été trouvée.");
 		}
 		
-		logger.info("== Listage des "+numberOfEmployee+" employés recus ==");
+		logger.info("== Listage des " + numberOfEmployee + " employés recus ==");
 		String employeeString = "";
 		try {
 			for (int i = 1; i < max; i++) {
@@ -163,7 +184,7 @@ public class ProtocolListExtractor{
 		catch (ArrayIndexOutOfBoundsException e) {
 			logger.error("Employee list recieved is not valid : the string \"" + employeeString +"\" is not well-formed.");
 			throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
-		}catch (NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			logger.error("A number cannot be readed in the line \"" + employeeString + "\"");
 			throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
 		}

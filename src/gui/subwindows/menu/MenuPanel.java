@@ -182,17 +182,18 @@ public class MenuPanel extends JPanel {
 			Protocol recievedProtocol = null;
 			try {
 				recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-				if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+				if (recievedProtocol.getActionCode() == ActionCodes.ERROR) {
 					DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
 					return;
 				}
-				if(recievedProtocol.getOptionsListSize() < 2) {
+				if (recievedProtocol.getOptionsListSize() < 2) {
 					MainWindow.logger.error("protocol recieved have no products.");
 					throw new InvalidProtocolException("Aucun produit n'a été récupéré.");
 				}
 				
 				//if no error occurs, we can move safely to the next page
 				context.initProductList(recievedProtocol);
+				context.changeWindow(WindowName.PRODUCT_LIST);
 				
 			} catch (IOException | InvalidProtocolException ex) {
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
@@ -241,6 +242,7 @@ public class MenuPanel extends JPanel {
 					
 					//if no error occurs, we can move safely to the next page
 					context.initProductList(recievedProtocol);
+					context.changeWindow(WindowName.PRODUCT_LIST);
 					
 				} catch (IOException | InvalidProtocolException ex) {
 					ex.printStackTrace();
@@ -257,7 +259,7 @@ public class MenuPanel extends JPanel {
 			Protocol recievedProtocol = null;
 			try {
 				recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-				if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+				if (recievedProtocol.getActionCode() == ActionCodes.ERROR) {
 					DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
 					return;
 				}

@@ -12,9 +12,7 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import data.Protocol;
@@ -24,11 +22,9 @@ import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
 import gui.components.DialogHandler;
-import gui.subwindows.employee_list.EmployeeListPanel;
 import gui.subwindows.popup_window.addEmployeePanel;
 import gui.subwindows.popup_window.addProductPanel;
 import process.connection.ServerConnectionHandler;
-import process.protocol.ProtocolExtractor;
 import process.protocol.ProtocolFactory;
 
 /**
@@ -196,6 +192,7 @@ public class MenuPanel extends JPanel {
 				context.changeWindow(WindowName.PRODUCT_LIST);
 				
 			} catch (IOException | InvalidProtocolException ex) {
+				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
 			}
 		}
@@ -242,7 +239,6 @@ public class MenuPanel extends JPanel {
 					
 					//if no error occurs, we can move safely to the next page
 					context.initProductList(recievedProtocol);
-					context.changeWindow(WindowName.PRODUCT_LIST);
 					
 				} catch (IOException | InvalidProtocolException ex) {
 					ex.printStackTrace();
@@ -291,7 +287,7 @@ public class MenuPanel extends JPanel {
 				context.initEmployeeList(recievedProtocol);
 				context.changeWindow(WindowName.EMPLOYEE_LIST);
 			} catch (IOException | InvalidProtocolException ex) {
-				ex.printStackTrace();
+				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
 			}
 		}
@@ -316,6 +312,19 @@ public class MenuPanel extends JPanel {
 							DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
 							return;
 						}
+						
+						recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+						if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
+							DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
+							return;
+						}
+						if(recievedProtocol.getOptionsListSize() < 2) {
+							MainWindow.logger.error("protocol recieved have no employe");
+							throw new InvalidProtocolException("Aucun Employe n'a pu être trouvé.");
+						}
+						
+						context.initEmployeeList(recievedProtocol);
+						
 						//when it ends, change to employee list
 						context.changeWindow(WindowName.EMPLOYEE_LIST);
 					} catch (IOException | InvalidProtocolException ex) {

@@ -7,7 +7,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

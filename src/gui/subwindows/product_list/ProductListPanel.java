@@ -7,10 +7,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -59,8 +57,7 @@ public class ProductListPanel extends JPanel {
 	 * SlideBar
 	 */
 	private final Dimension LIST_DIMENSION = new Dimension(4 * GuiConstants.WIDTH / 5, 10 * GuiConstants.HEIGHT / 20);
-	private final Dimension PRODUCT_LIST_DIMENSION = new Dimension(9 * LIST_DIMENSION.width / 10,
-			LIST_DIMENSION.height / 5);
+	private final Dimension PRODUCT_LIST_DIMENSION = new Dimension(9 * LIST_DIMENSION.width / 10, LIST_DIMENSION.height / 5);
 	private JScrollPane listScrollPanel = new JScrollPane();
 	private JPanel productListPanel;
 
@@ -111,6 +108,8 @@ public class ProductListPanel extends JPanel {
 			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			
+			// if we are here, no errors occured, we can switch window
+			context.changeWindow(WindowName.PRODUCT_LIST);
 		} catch (InvalidProtocolException e) {
 			// show error to user and go back to menu
 			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
@@ -179,8 +178,8 @@ public class ProductListPanel extends JPanel {
 					} else {
 						DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
 					}
-				} catch (IOException | InvalidProtocolException e1) {
-					e1.printStackTrace();
+				} catch (IOException | InvalidProtocolException ex) {
+					logger.error(ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Mauvaise réponse",
 							"La réponse du serveur n'a pas pu être déchifrée.");
 				}
@@ -213,10 +212,9 @@ public class ProductListPanel extends JPanel {
 			}
 		} catch (IOException | InvalidProtocolException e) {
 			// we can't do anymore here, go back to menu
+			logger.error("Can't retrieve information from string : " + e.getMessage());
 			DialogHandler.showErrorDialog(context, "Rafraichissement impossible",
 					"Impossible de récupérer la liste des produits, retour au menu.");
-			e.printStackTrace();
-			logger.error("Can't retrieve information from string : " + e.getMessage());
 		}
 
 		// if something bad happens, go to menu

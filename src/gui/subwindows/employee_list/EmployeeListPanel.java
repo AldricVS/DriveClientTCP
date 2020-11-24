@@ -93,27 +93,28 @@ public class EmployeeListPanel extends JPanel {
 	}
 	
 	public void initPanel(Protocol employeeList) {
-		extractFromProtocol(employeeList);
-		
-		employeeListPanel = new JPanel();
-		employeeListPanel.setLayout(new BoxLayout(employeeListPanel, BoxLayout.PAGE_AXIS));
-		employeeListPanel.setPreferredSize(LIST_DIMENSION);
-		initEmployeePanel(listEmployee);
-		
-		listScrollPanel.setViewportView(employeeListPanel);
-		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	}
-	
-	private void extractFromProtocol(Protocol protocol) {
 		try {
-			ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
-			listEmployee = extractor.extractEmployeeList();
+			extractFromProtocol(employeeList);
+			
+			employeeListPanel = new JPanel();
+			employeeListPanel.setLayout(new BoxLayout(employeeListPanel, BoxLayout.PAGE_AXIS));
+			employeeListPanel.setPreferredSize(LIST_DIMENSION);
+			initEmployeePanel(listEmployee);
+			
+			listScrollPanel.setViewportView(employeeListPanel);
+			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			
 		} catch (InvalidProtocolException e) {
 			//show error to user and go back to menu
 			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
 			context.changeWindow(WindowName.MENU);
 		}
+	}
+	
+	private void extractFromProtocol(Protocol protocol) throws InvalidProtocolException {
+		ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
+		listEmployee = extractor.extractEmployeeList();
 	}
 
 	/**
@@ -164,11 +165,15 @@ public class EmployeeListPanel extends JPanel {
 					//start protocol to add new product
 					Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
 					try {
-						ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
-						
-						context.changeWindow(WindowName.EMPLOYEE_LIST);
+						Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
+						if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+							// refresh the page : ask a new selection to server
+							refreshPanel();
+						} else {
+							DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
+						}
 					} catch (IOException | InvalidProtocolException ex) {
-						ex.printStackTrace();
+						logger.error("Error while adding new Employee: " + ex.getMessage());
 						DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
 					}
 				}
@@ -202,9 +207,8 @@ public class EmployeeListPanel extends JPanel {
 			}
 		} catch (IOException | InvalidProtocolException e) {
 			//we can't do anymore here, go back to menu
-			DialogHandler.showErrorDialog(context, "Rafraichissement impossible", "Impossible de récupérer la liste des employés, retour au menu.");
-			e.printStackTrace();
 			logger.error("Can't retrieve information from string : " + e.getMessage());
+			DialogHandler.showErrorDialog(context, "Rafraichissement impossible", "Impossible de récupérer la liste des employés, retour au menu.");
 		}
 		
 		//if something bad happens, go to menu

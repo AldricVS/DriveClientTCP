@@ -11,9 +11,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import com.sun.net.httpserver.Authenticator.Success;
 
 import data.Product;
 import data.Protocol;
@@ -164,7 +161,6 @@ public class ProductPanel extends JPanel {
 					}
 				} catch (IOException | InvalidProtocolException ex) {
 					// very unlikely to happen in real scenarios
-					ex.printStackTrace();
 					ProductListPanel.logger
 							.error("Modify product quantity string is not readable : " + ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur",
@@ -228,11 +224,8 @@ public class ProductPanel extends JPanel {
 							DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
 						}
 					} catch (IOException | InvalidProtocolException ex) {
-						ex.printStackTrace();
-						ProductListPanel.logger
-								.error("return code string is not readable : " + ex.getMessage());
-						DialogHandler.showErrorDialog(context, "Erreur",
-								"Erreur lors de la réception du message du serveur");
+						ProductListPanel.logger.error("return code string is not readable : " + ex.getMessage());
+						DialogHandler.showErrorDialog(context, "Erreur", "Erreur lors de la réception du message du serveur");
 					}
 				}
 			}
@@ -265,7 +258,6 @@ public class ProductPanel extends JPanel {
 						DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
 					}
 				} catch (IOException | InvalidProtocolException ex) {
-					ex.printStackTrace();
 					ProductListPanel.logger
 							.error("Remove product quantity string is not readable : " + ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur",

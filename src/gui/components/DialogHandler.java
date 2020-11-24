@@ -43,9 +43,12 @@ public class DialogHandler {
 	 */
 	public static void showErrorDialogFromProtocol(Component parentComponent, Protocol errorProtocol) {
 		//we check if it is really an error protocol
-		if(errorProtocol.getActionCode() == ActionCodes.ERROR && errorProtocol.getOptionsListSize() > 0) {
+		if (errorProtocol.getActionCode() == ActionCodes.ERROR && errorProtocol.getOptionsListSize() > 0) {
 			Toolkit.getDefaultToolkit().beep();
 			JOptionPane.showMessageDialog(parentComponent, errorProtocol.getOptionsElement(0), "Erreur", JOptionPane.ERROR_MESSAGE);
+		}
+		else {
+			showErrorDialog(parentComponent, "Erreur", "Erreur dans la communication avec le Serveur");
 		}
 	}
 	

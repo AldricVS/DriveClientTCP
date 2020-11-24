@@ -24,7 +24,7 @@ import process.protocol.ProtocolExtractor;
 public class ServerConnectionHandler {
 	private static Logger logger = LoggerUtility.getLogger(ServerConnectionHandler.class, LoggerUtility.LOG_PREFERENCE);
 	private static ServerConnectionHandler instance = new ServerConnectionHandler();
-	
+	private final int TIMEOUT_DELAY = 15 * 1000;
 	public static ServerConnectionHandler getInstance() {
 		return instance;
 	}
@@ -72,6 +72,7 @@ public class ServerConnectionHandler {
 		if (!isConnected) {
 			logger.info(String.format("Attempting connection to server with IP adress %s and port %d", ipAdress, port));
 			socket = new Socket(ipAdress, port);
+			socket.setSoTimeout(TIMEOUT_DELAY);
 			inputFlow = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			outputFlow = new PrintWriter(socket.getOutputStream(), true);
 			logger.info("Successful server connection !");

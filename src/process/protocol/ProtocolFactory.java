@@ -36,7 +36,9 @@ public class ProtocolFactory {
 	public static Protocol createAddProductProtocol(String name, String price, String quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.ADD_NEW_PRODUCT);
-		protocol.appendOptions(name, price, quantity);
+		protocol.appendOption(name);
+		protocol.appendOption(price);
+		protocol.appendOption(quantity);
 		logger.info(protocol.toString());
 		return protocol;
 	}
@@ -44,7 +46,8 @@ public class ProtocolFactory {
 	public static Protocol createAddProductQuantityProtocol(int id, int quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.ADD_PRODUCT_QUANTITY);
-		protocol.appendOptions(String.valueOf(id), String.valueOf(quantity));
+		protocol.appendOption(String.valueOf(id));
+		protocol.appendOption(String.valueOf(quantity));
 		logger.info(protocol.toString());
 		return protocol;
 	}
@@ -52,31 +55,32 @@ public class ProtocolFactory {
 	public static Protocol createRemoveProductQuantityProtocol(int id, int quantity) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.REMOVE_PRODUCT_QUANTITY);
-		protocol.appendOptions(String.valueOf(id), String.valueOf(quantity));
+		protocol.appendOption(String.valueOf(id));
+		protocol.appendOption(String.valueOf(quantity));
 		logger.info(protocol.toString());
 		return protocol;
 	}
 	
-	public static Protocol createDeleteProductProtocol(String id) {
+	public static Protocol createDeleteProductProtocol(int id) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.REMOVE_PRODUCT_DEFINITELY);
-		protocol.appendOption(id);
+		protocol.appendOption(String.valueOf(id));
 		logger.info(protocol.toString());
 		return protocol;
 	}
 	
-	public static Protocol createAcceptOrderProtocol(String id) {
+	public static Protocol createAcceptOrderProtocol(int id) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.VALIDATE_ORDER);
-		protocol.appendOption(id);
+		protocol.appendOption(String.valueOf(id));
 		logger.info(protocol.toString());
 		return protocol;
 	}
 	
-	public static Protocol createCancelOrderProtocol(String id) {
+	public static Protocol createCancelOrderProtocol(int id) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.DELETE_ORDER);
-		protocol.appendOption(id);
+		protocol.appendOption(String.valueOf(id));
 		logger.info(protocol.toString());
 		return protocol;
 	}
@@ -119,18 +123,27 @@ public class ProtocolFactory {
 		return protocol;
 	}
 	
-	public static Protocol createAddPromotionProtocol(String id, String price) {
+	public static Protocol createAddPromotionProtocol(int id, String price) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.APPLY_PROMOTION);
-		protocol.appendOptions(id, price);
+		protocol.appendOptions(String.valueOf(id));
+		protocol.appendOptions(price);
 		logger.info(protocol.toString());
 		return protocol;
 	}
 	
-	public static Protocol createRemovePromotionProtocol(String id) {
+	public static Protocol createRemovePromotionProtocol(int id) {
 		Protocol protocol;
 		protocol = new Protocol(ActionCodes.REMOVE_PROMOTION);
-		protocol.appendOption(id);
+		protocol.appendOption(String.valueOf(id));
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createErrorProtocol(String msg) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.ERROR);
+		protocol.appendOption(msg);
 		logger.info(protocol.toString());
 		return protocol;
 	}

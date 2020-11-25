@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
@@ -13,8 +14,10 @@ import org.apache.log4j.Logger;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import logger.LoggerUtility;
 import process.protocol.ProtocolExtractor;
+import process.protocol.ProtocolFactory;
 
 /**
  * This class will handle all things related to the connection with the server
@@ -122,8 +125,9 @@ public class ServerConnectionHandler {
 	 * @param protcol the protocol containing data to process
 	 * @return the string that server send back
 	 * @throws IOException if cannot read what server answered
+	 * @throws ServerConnectionLostException if the connection was lost with the Server
 	 */
-	public Protocol sendProtocolMessage(Protocol protcol) throws IOException, InvalidProtocolException {
+	public Protocol sendProtocolMessage(Protocol protcol) throws IOException, InvalidProtocolException, SocketException, SocketTimeoutException, ServerConnectionLostException {
 		if (isConnected) {
 			logger.info("Send message to server.");
 			
@@ -140,17 +144,26 @@ public class ServerConnectionHandler {
 			try {
 				String answer = inputFlow.readLine();
 				logger.info(answer);
+				if (answer.isEmpty()) {
+					//TODO choisir une exception à jeter si le serveur envoie une réponse vide
+					//throw new SocketException(msg);
+					//throw new InvalidProtocolException(msg);
+					//throw new ServerConnectionLostException(msg);
+				}
 				ProtocolExtractor extractor = new ProtocolExtractor(answer);
 				return extractor.getProtocol();
+			} catch (SocketTimeoutException ex) {
+				throw new IOException("Délai d'attente dépassé");
 			} catch (SocketException ex) {
 				//throw SocketException when server connexion was closed without asking
-				throw new IOException("Délai d'attente dépassé");
+				isConnected = false;
+				throw new ServerConnectionLostException("Erreur lors de la connexion avec le Serveur, déconnexion...");
 			}
 		}
 		else {
 			logger.error("Connection hasn't started yet");
 		}
-		return null;
+		return ProtocolFactory.createErrorProtocol("Connection hasn't started yet");
 	}
 	
 	/**

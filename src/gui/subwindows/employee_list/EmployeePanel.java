@@ -14,6 +14,7 @@ import data.Protocol;
 import data.User;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.components.DialogHandler;
 import gui.subwindows.popup_window.addEmployeePanel;
 import process.connection.ServerConnectionHandler;
@@ -111,6 +112,10 @@ public class EmployeePanel extends JPanel {
 				} catch (IOException |InvalidProtocolException ex) {
 					EmployeeListPanel.logger.error("Couldn't remove Employee: " + ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+				} catch (ServerConnectionLostException ex) {
+					EmployeeListPanel.logger.error(ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+					context.disconnect();
 				}
 			}
 		}

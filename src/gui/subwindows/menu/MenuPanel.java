@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
@@ -194,6 +195,10 @@ public class MenuPanel extends JPanel {
 			} catch (IOException | InvalidProtocolException ex) {
 				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+			} catch (ServerConnectionLostException ex) {
+				MainWindow.logger.error(ex.getMessage());
+				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+				context.disconnect();
 			}
 		}
 	}
@@ -224,6 +229,7 @@ public class MenuPanel extends JPanel {
 						DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
 						return;
 					}
+					DialogHandler.showInformationDialog(context, "Succès", "Le produit "+productName+" a bien été ajouté");
 					
 					//when it ends, change to product list
 					protocol = ProtocolFactory.createGetListProductProtocol();
@@ -241,8 +247,12 @@ public class MenuPanel extends JPanel {
 					context.initProductList(recievedProtocol);
 					
 				} catch (IOException | InvalidProtocolException ex) {
-					ex.printStackTrace();
+					MainWindow.logger.error(ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+				} catch (ServerConnectionLostException ex) {
+					MainWindow.logger.error(ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+					context.disconnect();
 				}
 			}
 		}
@@ -264,8 +274,12 @@ public class MenuPanel extends JPanel {
 				//go to order page
 				context.changeWindow(WindowName.ORDER_LIST);
 			} catch (IOException | InvalidProtocolException ex) {
-				ex.printStackTrace();
+				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+			} catch (ServerConnectionLostException ex) {
+				MainWindow.logger.error(ex.getMessage());
+				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+				context.disconnect();
 			}
 		}
 	}
@@ -289,6 +303,10 @@ public class MenuPanel extends JPanel {
 			} catch (IOException | InvalidProtocolException ex) {
 				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+			} catch (ServerConnectionLostException ex) {
+				MainWindow.logger.error(ex.getMessage());
+				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+				context.disconnect();
 			}
 		}
 	}
@@ -304,14 +322,17 @@ public class MenuPanel extends JPanel {
 				String employeeConfirmPassword = addEmployeePopup.getPasswordConfirm();
 				if (employeePassword.equals(employeeConfirmPassword)) {
 					//start protocol to add new product
-					Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
-					Protocol recievedProtocol;
 					try {
+						Protocol protocol = ProtocolFactory.createAddEmployeeProtocol(employeeName, employeePassword);
+						Protocol recievedProtocol;
+						
 						recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
 						if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
 							DialogHandler.showErrorDialogFromProtocol(context, recievedProtocol);
 							return;
 						}
+						protocol = ProtocolFactory.createGetListEmployeeProtocol();
+						recievedProtocol = null;
 						
 						recievedProtocol = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
 						if(recievedProtocol.getActionCode() == ActionCodes.ERROR) {
@@ -330,6 +351,10 @@ public class MenuPanel extends JPanel {
 					} catch (IOException | InvalidProtocolException ex) {
 						ex.printStackTrace();
 						DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+					} catch (ServerConnectionLostException ex) {
+						MainWindow.logger.error(ex.getMessage());
+						DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+						context.disconnect();
 					}
 				}
 				else {

@@ -16,6 +16,7 @@ import data.Product;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.components.DialogHandler;
 import gui.subwindows.popup_window.ModifyProductQuantityOption;
 import gui.subwindows.popup_window.ModifyPromotionOption;
@@ -165,6 +166,10 @@ public class ProductPanel extends JPanel {
 							.error("Modify product quantity string is not readable : " + ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur",
 							"Erreur lors de la réception du message du serveur");
+				} catch (ServerConnectionLostException ex) {
+					ProductListPanel.logger.error(ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+					context.disconnect();
 				}
 			}
 		}
@@ -195,9 +200,9 @@ public class ProductPanel extends JPanel {
 					}
 
 					if (DialogHandler.showConfirmDialog(context, "Confirmation", confirmationString)) {
-						String idString = String.valueOf(product.getId());
+						int idProduct = product.getId();
 						BigDecimal newPromotion = dialog.getPromotionAmount();
-						protocolToSend = ProtocolFactory.createAddPromotionProtocol(idString, newPromotion.toString());
+						protocolToSend = ProtocolFactory.createAddPromotionProtocol(idProduct, newPromotion.toString());
 					}
 
 				} else if (dialog.getUserActionChoosen() == ModifyPromotionOption.REMOVE_PROMOTION_OPTION) {
@@ -205,7 +210,7 @@ public class ProductPanel extends JPanel {
 					if (product.hasPromotion()) {
 						String content = "Voulez-vous vraiment supprimer cette promotion ?";
 						if (DialogHandler.showConfirmDialog(context, "Supprimer", content)) {
-							String idString = String.valueOf(product.getId());
+							int idString = product.getId();
 							protocolToSend = ProtocolFactory.createRemovePromotionProtocol(idString);
 							successString = "Promotion supprimée avec succès";
 						}
@@ -226,6 +231,10 @@ public class ProductPanel extends JPanel {
 					} catch (IOException | InvalidProtocolException ex) {
 						ProductListPanel.logger.error("return code string is not readable : " + ex.getMessage());
 						DialogHandler.showErrorDialog(context, "Erreur", "Erreur lors de la réception du message du serveur");
+					} catch (ServerConnectionLostException ex) {
+						ProductListPanel.logger.error(ex.getMessage());
+						DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+						context.disconnect();
 					}
 				}
 			}
@@ -242,7 +251,7 @@ public class ProductPanel extends JPanel {
 							+ "\".\nCela le fera disparaitre définitivement.");
 
 			if (wantToDelete) {
-				String idProduct = String.valueOf(product.getId());
+				int idProduct = product.getId();
 				Protocol protocolToSend = ProtocolFactory.createDeleteProductProtocol(idProduct);
 
 				// send this protocol to the server
@@ -262,6 +271,10 @@ public class ProductPanel extends JPanel {
 							.error("Remove product quantity string is not readable : " + ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Erreur",
 							"Erreur lors de la réception du message du serveur");
+				} catch (ServerConnectionLostException ex) {
+					ProductListPanel.logger.error(ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+					context.disconnect();
 				}
 
 			}

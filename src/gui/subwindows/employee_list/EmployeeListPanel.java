@@ -24,6 +24,7 @@ import data.Protocol;
 import data.User;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
@@ -167,6 +168,7 @@ public class EmployeeListPanel extends JPanel {
 					try {
 						Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocol);
 						if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+							DialogHandler.showInformationDialog(context, "Succès", "Bienvenue à "+employeeName+" qui rejoint l'équipe !");
 							// refresh the page : ask a new selection to server
 							refreshPanel();
 						} else {
@@ -175,6 +177,10 @@ public class EmployeeListPanel extends JPanel {
 					} catch (IOException | InvalidProtocolException ex) {
 						logger.error("Error while adding new Employee: " + ex.getMessage());
 						DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());
+					} catch (ServerConnectionLostException ex) {
+						logger.error(ex.getMessage());
+						DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+						context.disconnect();
 					}
 				}
 				else {
@@ -209,6 +215,10 @@ public class EmployeeListPanel extends JPanel {
 			//we can't do anymore here, go back to menu
 			logger.error("Can't retrieve information from string : " + e.getMessage());
 			DialogHandler.showErrorDialog(context, "Rafraichissement impossible", "Impossible de récupérer la liste des employés, retour au menu.");
+		} catch (ServerConnectionLostException ex) {
+			logger.error(ex.getMessage());
+			DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+			context.disconnect();
 		}
 		
 		//if something bad happens, go to menu
@@ -217,5 +227,7 @@ public class EmployeeListPanel extends JPanel {
 		}
 	}
 	
-	
+	protected void disconnect() {
+		context.disconnect();
+	}
 }

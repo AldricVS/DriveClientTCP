@@ -25,6 +25,7 @@ import data.Product;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
@@ -173,6 +174,7 @@ public class ProductListPanel extends JPanel {
 					Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protcol);
 					// If server send success message, add the new product in the list
 					if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+						DialogHandler.showInformationDialog(context, "Succès", "Le produit "+productName+" a bien été ajouté");
 						// refresh the page : ask a new selection to server
 						refreshPanel();
 					} else {
@@ -182,6 +184,10 @@ public class ProductListPanel extends JPanel {
 					logger.error(ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Mauvaise réponse",
 							"La réponse du serveur n'a pas pu être déchifrée.");
+				} catch (ServerConnectionLostException ex) {
+					logger.error(ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+					context.disconnect();
 				}
 			}
 		}
@@ -215,6 +221,10 @@ public class ProductListPanel extends JPanel {
 			logger.error("Can't retrieve information from string : " + e.getMessage());
 			DialogHandler.showErrorDialog(context, "Rafraichissement impossible",
 					"Impossible de récupérer la liste des produits, retour au menu.");
+		} catch (ServerConnectionLostException ex) {
+			logger.error(ex.getMessage());
+			DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+			context.disconnect();
 		}
 
 		// if something bad happens, go to menu
@@ -222,5 +232,8 @@ public class ProductListPanel extends JPanel {
 			context.changeWindow(WindowName.MENU);
 		}
 	}
-
+	
+	protected void disconnect() {
+		context.disconnect();
+	}
 }

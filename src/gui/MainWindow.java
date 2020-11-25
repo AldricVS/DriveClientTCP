@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.components.DialogHandler;
 import gui.subwindows.employee_list.EmployeeListPanel;
 import gui.subwindows.home.ConnexionPanel;
@@ -153,6 +154,9 @@ public class MainWindow extends JFrame {
 		}
 		catch (IOException e) {
 			logger.error(e.getMessage());
+		}
+		catch (ServerConnectionLostException ex) {
+			logger.error(ex.getMessage());
 		}
 		//Send a disconnect message to the server
 		disconnect();

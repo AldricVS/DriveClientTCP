@@ -44,6 +44,9 @@ public class MainWindow extends JFrame {
 	private Container contentPane;
 	
 	public static final Dimension MAIN_DIMENSION = new Dimension(GuiConstants.WIDTH, GuiConstants.HEIGHT);
+	
+	private String ipAdress;
+	private int port;
 
 	/**
 	 * Card layout is the main panel used in order to navigate through all
@@ -60,8 +63,10 @@ public class MainWindow extends JFrame {
 	OrderListPanel orderListPanel = new OrderListPanel(context);
 	EmployeeListPanel employeeListPanel = new EmployeeListPanel(context);
 
-	public MainWindow() {
+	public MainWindow(String ipAdress, int port) {
 		super("Drivepicerie");
+		this.ipAdress = ipAdress;
+		this.port = port;
 		contentPane = getContentPane();
 		init();
 		addSubWindows();
@@ -130,7 +135,7 @@ public class MainWindow extends JFrame {
 		Protocol answer = null;
 		try {
 			//start connection with the server
-			ServerConnectionHandler.getInstance().initConnection();
+			ServerConnectionHandler.getInstance().initConnection(ipAdress, port);
 			connectProtocol = ProtocolFactory.createConnectionProtocol(id, mdp, asAdmin);
 			
 			logger.info("Connection attempt: " + connectProtocol.toString());
@@ -147,13 +152,13 @@ public class MainWindow extends JFrame {
 			return true;
 		}
 		catch (UnknownHostException e) {
-			logger.error("Impossible de joindre l'adresse IP fournit");
+			logger.error("Impossible de joindre l'adresse IP fournie");
 		}
 		catch (InvalidProtocolException e) {
 			logger.error("Erreur dans la formulation d'un Protocol");
 		}
 		catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error("Cannot connect on port " + port + " at " + ipAdress);
 		}
 		catch (ServerConnectionLostException ex) {
 			logger.error(ex.getMessage());

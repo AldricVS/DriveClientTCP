@@ -187,7 +187,7 @@ public class ProductListPanel extends JPanel {
 				} catch (ServerConnectionLostException ex) {
 					logger.error(ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
-					context.disconnect();
+					disconnect();
 				}
 			}
 		}
@@ -224,7 +224,7 @@ public class ProductListPanel extends JPanel {
 		} catch (ServerConnectionLostException ex) {
 			logger.error(ex.getMessage());
 			DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
-			context.disconnect();
+			disconnect();
 		}
 
 		// if something bad happens, go to menu
@@ -235,5 +235,6 @@ public class ProductListPanel extends JPanel {
 	
 	protected void disconnect() {
 		context.disconnect();
+		context.changeWindow(WindowName.LOGIN);
 	}
 }

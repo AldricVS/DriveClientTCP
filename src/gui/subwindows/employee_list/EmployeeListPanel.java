@@ -180,7 +180,7 @@ public class EmployeeListPanel extends JPanel {
 					} catch (ServerConnectionLostException ex) {
 						logger.error(ex.getMessage());
 						DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
-						context.disconnect();
+						disconnect();
 					}
 				}
 				else {
@@ -218,7 +218,7 @@ public class EmployeeListPanel extends JPanel {
 		} catch (ServerConnectionLostException ex) {
 			logger.error(ex.getMessage());
 			DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
-			context.disconnect();
+			disconnect();
 		}
 		
 		//if something bad happens, go to menu
@@ -229,5 +229,6 @@ public class EmployeeListPanel extends JPanel {
 	
 	protected void disconnect() {
 		context.disconnect();
+		context.changeWindow(WindowName.LOGIN);
 	}
 }

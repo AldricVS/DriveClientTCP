@@ -145,10 +145,7 @@ public class ServerConnectionHandler {
 				String answer = inputFlow.readLine();
 				logger.info(answer);
 				if (answer.isEmpty()) {
-					//TODO choisir une exception à jeter si le serveur envoie une réponse vide
-					//throw new SocketException(msg);
-					//throw new InvalidProtocolException(msg);
-					//throw new ServerConnectionLostException(msg);
+					throw new InvalidProtocolException("Le Serveur a renvoyé une réponse vide");
 				}
 				ProtocolExtractor extractor = new ProtocolExtractor(answer);
 				return extractor.getProtocol();

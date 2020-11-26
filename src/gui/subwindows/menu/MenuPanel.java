@@ -199,6 +199,7 @@ public class MenuPanel extends JPanel {
 				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
 				context.disconnect();
+				context.changeWindow(WindowName.LOGIN);
 			}
 		}
 	}
@@ -253,6 +254,7 @@ public class MenuPanel extends JPanel {
 					MainWindow.logger.error(ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
 					context.disconnect();
+					context.changeWindow(WindowName.LOGIN);
 				}
 			}
 		}
@@ -280,6 +282,7 @@ public class MenuPanel extends JPanel {
 				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
 				context.disconnect();
+				context.changeWindow(WindowName.LOGIN);
 			}
 		}
 	}
@@ -307,6 +310,7 @@ public class MenuPanel extends JPanel {
 				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
 				context.disconnect();
+				context.changeWindow(WindowName.LOGIN);
 			}
 		}
 	}
@@ -355,6 +359,7 @@ public class MenuPanel extends JPanel {
 						MainWindow.logger.error(ex.getMessage());
 						DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
 						context.disconnect();
+						context.changeWindow(WindowName.LOGIN);
 					}
 				}
 				else {

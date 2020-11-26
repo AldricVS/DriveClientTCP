@@ -15,6 +15,7 @@ import data.User;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
 import exceptions.ServerConnectionLostException;
+import gui.WindowName;
 import gui.components.DialogHandler;
 import gui.subwindows.popup_window.addEmployeePanel;
 import process.connection.ServerConnectionHandler;

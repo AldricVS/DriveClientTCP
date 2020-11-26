@@ -30,7 +30,6 @@ import process.protocol.ProtocolFactory;
  */
 public class ProductPanel extends JPanel {
 	private ProductListPanel context;
-
 	private Product product;
 
 	private Dimension productDimension;

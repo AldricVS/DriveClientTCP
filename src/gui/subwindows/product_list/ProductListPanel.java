@@ -112,6 +112,7 @@ public class ProductListPanel extends JPanel {
 			// if we are here, no errors occured, we can switch window
 			context.changeWindow(WindowName.PRODUCT_LIST);
 		} catch (InvalidProtocolException e) {
+			logger.error("Erreur dans l'extraction du Protocol: "+e.getMessage());
 			// show error to user and go back to menu
 			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
 			context.changeWindow(WindowName.MENU);

@@ -35,11 +35,11 @@ import logger.LoggerUtility;
 import process.protocol.ProtocolListExtractor;
 
 /**
- * 
+ * Main Panel showing all Order recieved from the server
  * @author Maxence Hennekein
  */
 public class OrderListPanel extends JPanel {
-	private static Logger logger = LoggerUtility.getLogger(OrderListPanel.class, LoggerUtility.LOG_PREFERENCE);
+	public static Logger logger = LoggerUtility.getLogger(OrderListPanel.class, LoggerUtility.LOG_PREFERENCE);
 	private MainWindow context;
 	private ArrayList<Order> listOrder;
 	
@@ -104,7 +104,7 @@ public class OrderListPanel extends JPanel {
 			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		} catch (InvalidProtocolException e) {
-			logger.error("Erreur dans l'extraction du Protocol");
+			logger.error("Erreur dans l'extraction du Protocol: "+e.getMessage());
 			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());
 			//return to Menu
 			context.changeWindow(WindowName.MENU);
@@ -116,10 +116,14 @@ public class OrderListPanel extends JPanel {
 		listOrder = extractor.extractOrderList();
 	}
 	
+	/**
+	 * change the productList received into OrderPanel
+	 * @param productList
+	 */
 	private void initProductPanel(List<Order> productList) {
 		for (Iterator<Order> i = productList.iterator(); i.hasNext(); ) {
-			Order o = i.next();
-			orderListPanel.add(new OrderPanel(o, ORDER_LIST_DIMENSION));
+			Order order = i.next();
+			orderListPanel.add(new OrderPanel(this, order, ORDER_LIST_DIMENSION));
 		}
 	}
 
@@ -129,7 +133,6 @@ public class OrderListPanel extends JPanel {
 		
 		returnButton.setAlignmentX(CENTER_ALIGNMENT);
 		returnButton.setMaximumSize(BUTTON_SIZE);
-		
 		returnButton.addActionListener(new ActionRetour());
 		
 		//add button

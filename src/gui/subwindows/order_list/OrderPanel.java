@@ -128,7 +128,7 @@ public class OrderPanel extends JPanel {
 					if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
 						DialogHandler.showInformationDialog(context, "Commande confirmé", "La Commande a bien été accepté");
 						//reload page
-						//context.refreshPanel();
+						context.refreshPanel();
 					}
 					else {
 						throw new InvalidProtocolException();
@@ -139,7 +139,7 @@ public class OrderPanel extends JPanel {
 				} catch (ServerConnectionLostException ex) {
 					ProductListPanel.logger.error(ex.getMessage());
 					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
-					//context.disconnect();
+					context.disconnect();
 				}
 			}
 		}
@@ -147,9 +147,31 @@ public class OrderPanel extends JPanel {
 	
 	class ActionCancelOrder implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			
+			int orderId = order.getIdOrder();
+			boolean acceptOrder = DialogHandler.showConfirmDialog(context, "Annulation de la commande", "Annuler la commande "+orderId+" ?");
+			if (acceptOrder) {
+				Protocol protocolToSend = ProtocolFactory.createCancelOrderProtocol(orderId);
+				Protocol protocolRecieved = null;
+				try {
+					protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocolToSend);
+					if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+						DialogHandler.showInformationDialog(context, "Commande annulé", "La Commande a bien été annulé");
+						//reload page
+						context.refreshPanel();
+					}
+					else {
+						throw new InvalidProtocolException();
+					}
+				} catch (IOException | InvalidProtocolException ex) {
+					OrderListPanel.logger.error("Couldn't accept order with Id: "+orderId);
+					DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
+				} catch (ServerConnectionLostException ex) {
+					ProductListPanel.logger.error(ex.getMessage());
+					DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+					context.disconnect();
+				}
+			}
 		}
 	}
-	
 	
 }

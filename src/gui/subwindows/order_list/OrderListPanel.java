@@ -6,10 +6,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -23,15 +22,17 @@ import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 
 import data.Order;
-import data.Product;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
+import exceptions.ServerConnectionLostException;
 import gui.GuiConstants;
 import gui.MainWindow;
 import gui.WindowName;
 import gui.components.DialogHandler;
 import logger.LoggerUtility;
+import process.connection.ServerConnectionHandler;
+import process.protocol.ProtocolFactory;
 import process.protocol.ProtocolListExtractor;
 
 /**
@@ -117,11 +118,11 @@ public class OrderListPanel extends JPanel {
 	}
 	
 	/**
-	 * change the productList received into OrderPanel
-	 * @param productList
+	 * change the orderList received into OrderPanel
+	 * @param orderList
 	 */
-	private void initProductPanel(List<Order> productList) {
-		for (Iterator<Order> i = productList.iterator(); i.hasNext(); ) {
+	private void initProductPanel(List<Order> orderList) {
+		for (Iterator<Order> i = orderList.iterator(); i.hasNext(); ) {
 			Order order = i.next();
 			orderListPanel.add(new OrderPanel(this, order, ORDER_LIST_DIMENSION));
 		}
@@ -145,5 +146,41 @@ public class OrderListPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			context.changeWindow(WindowName.MENU);
 		}
+	}
+    
+    public void refreshPanel() {
+		boolean isRefreshValid = false;
+		try {
+			Protocol protocolRecieved = ServerConnectionHandler.getInstance()
+					.sendProtocolMessage(ProtocolFactory.createGetListOrderProtocol());
+			
+			if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+				extractFromProtocol(protocolRecieved);
+				initProductPanel(listOrder);
+				listScrollPanel.setViewportView(orderListPanel);
+				repaint();
+				orderListPanel.repaint();
+				isRefreshValid = true;
+			}
+		} catch (IOException | InvalidProtocolException e) {
+			// we can't do anymore here, go back to menu
+			logger.error("Can't retrieve information from string : " + e.getMessage());
+			DialogHandler.showErrorDialog(context, "Rafraichissement impossible",
+					"Impossible de récupérer la liste des commandes, retour au Menu.");
+		} catch (ServerConnectionLostException ex) {
+			logger.error(ex.getMessage());
+			DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+			disconnect();
+		}
+
+		// if something bad happens, go to menu
+		if (!isRefreshValid) {
+			context.changeWindow(WindowName.MENU);
+		}
+	}
+    
+	protected void disconnect() {
+		context.disconnect();
+		context.changeWindow(WindowName.LOGIN);
 	}
 }

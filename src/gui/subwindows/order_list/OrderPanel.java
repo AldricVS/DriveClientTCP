@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -12,14 +13,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import data.Order;
+import data.Product;
 import data.Protocol;
 import data.enums.ActionCodes;
 import exceptions.InvalidProtocolException;
 import exceptions.ServerConnectionLostException;
 import gui.components.DialogHandler;
+import gui.subwindows.popup_window.showDetailsOrderPanel;
 import gui.subwindows.product_list.ProductListPanel;
 import process.connection.ServerConnectionHandler;
 import process.protocol.ProtocolFactory;
+import process.protocol.ProtocolListExtractor;
 
 /**
  * 
@@ -112,7 +116,33 @@ public class OrderPanel extends JPanel {
 	
 	class ActionShowDetails implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			
+			int orderId = order.getIdOrder();
+			Protocol protocolToSend = ProtocolFactory.createGetSpecificOrderProtocol(orderId);
+			Protocol protocolRecieved = null;
+			try {
+				protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocolToSend);
+				if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
+					ProtocolListExtractor extractor = new ProtocolListExtractor(protocolRecieved);
+					ArrayList<Product> productList = extractor.extractOrderProductList();
+					BigDecimal priceTotalRecieved = new BigDecimal(protocolRecieved.getOptionsElement(1));
+					if (order.getTotalPrice().compareTo(priceTotalRecieved) == 0) {
+						showDetailsOrderPanel detailsOrder = new showDetailsOrderPanel(context, order, productList);
+						detailsOrder.showPopUp();
+					}
+				}
+				else {
+					throw new InvalidProtocolException("Erreur dans la réponse du serveur");
+				}
+			} catch (NumberFormatException ex) {
+				OrderListPanel.logger.error("Error while loading totalPrice: "+protocolRecieved.getOptionsElement(2)+" ; The Number is not valid.");
+			} catch (IOException | InvalidProtocolException ex) {
+				OrderListPanel.logger.error("Couldn't load order with Id: "+orderId);
+				DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);
+			} catch (ServerConnectionLostException ex) {
+				ProductListPanel.logger.error(ex.getMessage());
+				DialogHandler.showErrorDialog(context, "Fin de la Connection", ex.getMessage());
+				context.disconnect();
+			}
 		}
 	}
 	

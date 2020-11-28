@@ -28,19 +28,17 @@ public class addProductPanel extends JOptionPane{
 	
 	
 	//Panel
-	JPanel addProductPanel = new JPanel();
+	private JPanel addProductPanel = new JPanel();
 	
 	//TextLabel
-	//private static int LABEL_DIMENSION = GuiConstants.;
-	JLabel textName = new JLabel("Nom du Produit");
-	JLabel textPrice = new JLabel("Prix du Produit");
-	JLabel textQuantity = new JLabel("Quantité du Produit");
+	private JLabel textName = new JLabel("Nom du Produit");
+	private JLabel textPrice = new JLabel("Prix du Produit");
+	private JLabel textQuantity = new JLabel("Quantité du Produit");
 	
 	//TextArea
-	//private static int FIELD_DIMENSION = GuiConstants.;
-	JTextField fieldName = new JTextField(NUMBER_COLUMNS);
-	JTextField fieldPrice;
-	JTextField fieldQuantity;
+	private JTextField fieldName = new JTextField(NUMBER_COLUMNS);
+	private JTextField fieldPrice;
+	private JTextField fieldQuantity;
 
 	private static String[] options = {"Ajouter", "Annuler"};
 	

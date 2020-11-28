@@ -122,6 +122,7 @@ public class OrderListPanel extends JPanel {
 	 * @param orderList
 	 */
 	private void initProductPanel(List<Order> orderList) {
+		orderListPanel.removeAll();
 		for (Iterator<Order> i = orderList.iterator(); i.hasNext(); ) {
 			Order order = i.next();
 			orderListPanel.add(new OrderPanel(this, order, ORDER_LIST_DIMENSION));
@@ -151,8 +152,8 @@ public class OrderListPanel extends JPanel {
     public void refreshPanel() {
 		boolean isRefreshValid = false;
 		try {
-			Protocol protocolRecieved = ServerConnectionHandler.getInstance()
-					.sendProtocolMessage(ProtocolFactory.createGetListOrderProtocol());
+			Protocol protocolToSend = ProtocolFactory.createGetListOrderProtocol();
+			Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocolToSend);
 			
 			if (protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
 				extractFromProtocol(protocolRecieved);

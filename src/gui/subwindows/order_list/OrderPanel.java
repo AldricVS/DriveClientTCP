@@ -102,11 +102,11 @@ public class OrderPanel extends JPanel {
 		add(showDetailsButton);
 		
 		acceptOrderButton.setPreferredSize(buttonDimension);
-		showDetailsButton.addActionListener(new ActionAcceptOrder());
+		acceptOrderButton.addActionListener(new ActionAcceptOrder());
 		add(acceptOrderButton);
 		
 		cancelOrderButton.setPreferredSize(buttonDimension);
-		showDetailsButton.addActionListener(new ActionCancelOrder());
+		cancelOrderButton.addActionListener(new ActionCancelOrder());
 		add(cancelOrderButton);
 	}
 	

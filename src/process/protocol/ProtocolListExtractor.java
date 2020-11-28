@@ -31,6 +31,7 @@ public class ProtocolListExtractor{
 	
 	private static final int NUMBER_ITEMS_PER_PRODUCT = 5;
 	private static final int NUMBER_ITEMS_PER_ORDER = 6;
+	private static final int NUMBER_ITEMS_PER_PRODUCT_ORDER = 3;
 	private static final int NUMBER_ITEMS_PER_EMPLOYEE = 1;
 
 	
@@ -141,6 +142,55 @@ public class ProtocolListExtractor{
 		logger.info("== Fin de la liste des commandes ==");
 		return listOrder;
 	}
+	
+	public ArrayList<Product> extractOrderProductList() throws InvalidProtocolException {
+		ArrayList<Product> listProduct = new ArrayList<Product>();
+		int numberOfProducts = 0;
+		int max = listProtocol.getOptionsListSize();
+		try {
+			numberOfProducts = Integer.parseInt(listProtocol.getOptionsElement(0)) - 1;
+		} catch(NumberFormatException ex1) {
+			logger.error(listProtocol.getOptionsElement(0) + " cannot be changed to an integer.");
+			throw new InvalidProtocolException("Une erreur dans le compte des produits a été trouvée.");
+		} catch (IndexOutOfBoundsException ex2) {
+			logger.error("Received product list cannot be used");
+			throw new InvalidProtocolException("Impossible de lancer le compte des produits.");
+		}
+		
+		//Note, on a max-2 car il y a le nombre de produit transmis & le prix total
+		if (max-2 != numberOfProducts) {
+			throw new InvalidProtocolException("Une erreur dans le compte des produits a été trouvée.");
+		}
+		
+		
+		logger.info("== Listage des "+numberOfProducts+" produits de la commande reçu recus ==");
+		String productString = "";
+		try {
+			for (int i = 2; i < max; i++) {
+				productString = listProtocol.getOptionsElement(i);
+				logger.info(productString);
+				String[] productsArray = productString.split(";");
+				//array size must be 5
+				if(productsArray.length != NUMBER_ITEMS_PER_PRODUCT_ORDER) {
+					logger.error("Product list recieved is not valid : the string \"" + productString +"\" is not well-formed.");
+					throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
+				}
+				
+				listProduct.add(new Product(Integer.parseInt(productsArray[0]), productsArray[1], new BigDecimal(0), Integer.parseInt(productsArray[2]), null));
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			//if we are here, it means that product list is not well formed, protocol is invalid
+			logger.error("Product list recieved is not valid : the string \"" + productString +"\" is not well-formed.");
+			throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
+		} catch (NumberFormatException e) {
+			logger.error("A number cannot be readed in the line \"" + productString + "\"");
+			throw new InvalidProtocolException(ERROR_PRODUCT_LIST);
+		}
+		logger.info("== Fin de la liste des produits ==");
+		return listProduct;
+	}
+	
 	
 	/**
 	 * Extract all employee recieved from the protocol.

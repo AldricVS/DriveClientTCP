@@ -105,6 +105,22 @@ public class ProtocolFactory {
 		logger.info(protocol.toString());
 		return protocol;
 	}
+
+	public static Protocol createGetSpecificOrderProtocol(int id) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.GET_SPECIFIC_ORDER);
+		protocol.appendOption(String.valueOf(id));
+		logger.info(protocol.toString());
+		return protocol;
+	}
+	
+	public static Protocol createGetSpecificProductProtocol(int id) {
+		Protocol protocol;
+		protocol = new Protocol(ActionCodes.GET_SPECIFIC_PRDUCT);
+		protocol.appendOption(String.valueOf(id));
+		logger.info(protocol.toString());
+		return protocol;
+	}
 	
 	public static Protocol createAddEmployeeProtocol(String employeeName, String password) {
 		Protocol protocol;

@@ -4,9 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -41,6 +41,8 @@ public class showDetailsOrderPanel extends JOptionPane {
 	//productList / quantity
 	private JPanel listProductPanel = new JPanel();
     private JScrollPane listScrollPanel = new JScrollPane();
+	private JLabel textProductName = new JLabel("Nom du Produit");
+	private JLabel textProductQuantity = new JLabel("Quantité du produit");
 	
 	private static String[] options = {"Fermer"};
 	
@@ -59,15 +61,13 @@ public class showDetailsOrderPanel extends JOptionPane {
 	
 	private void initLayout() {
 		this.setLayout(new BorderLayout());
-		this.add(orderInfoPanel);
-		
+		this.add(orderInfoPanel, BorderLayout.NORTH);
+		this.add(listScrollPanel, BorderLayout.SOUTH);
 	}
 	
 	private void initOrderInfo() {
 		orderInfoPanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		//c.weightx = 2;
-		//c.weighty = 3;
 		c.insets = new Insets(5, 5, 5, 5);
 
 		//Ajout des TextFields
@@ -88,9 +88,7 @@ public class showDetailsOrderPanel extends JOptionPane {
 		orderInfoPanel.add(textTotalPrice, c);
 		
 		
-		//Ajout des textArea
-		c.gridwidth = 2;
-		
+		//Ajout des données de la commande
 		c.gridx = 1;
 		c.gridy = 0;
 		orderInfoPanel.add(fieldID, c);
@@ -106,6 +104,15 @@ public class showDetailsOrderPanel extends JOptionPane {
 		c.gridx = 1;
 		c.gridy = 3;
 		orderInfoPanel.add(fieldTotalPrice, c);
+		
+		//Ajout des informations pour le produit
+		c.gridx = 0;
+		c.gridy = 4;
+		orderInfoPanel.add(textProductName, c);
+		
+		c.gridx = 1;
+		c.gridy = 4;
+		orderInfoPanel.add(textProductQuantity, c);
 	}
 	
 	private void initField() {
@@ -116,7 +123,26 @@ public class showDetailsOrderPanel extends JOptionPane {
 	}
 	
 	private void initProductList() {
+		listProductPanel.removeAll();
+		listProductPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(2, 5, 2, 5);
+		//c.gridwidth = 2;
 		
+		int y = 0;
+		for (Iterator<Product> i = productList.iterator(); i.hasNext(); y++) {
+			Product p = i.next();
+			c.gridx = 0;
+			c.gridy = y;
+			listProductPanel.add(new JLabel(p.getName()), c);
+			c.gridx = 3;
+			c.gridy = y;
+			listProductPanel.add(new JLabel(String.valueOf(p.getQuantity())), c);
+		}
+
+		listScrollPanel.setViewportView(listProductPanel);
+		listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 		
 	public boolean showPopUp() {

@@ -222,7 +222,7 @@ public class ProductPanel extends JPanel {
 						Protocol protocolRecieved = ServerConnectionHandler.getInstance().sendProtocolMessage(protocolToSend);
 						if(protocolRecieved.getActionCode() == ActionCodes.SUCESS) {
 							//show message depending on the action before
-							DialogHandler.showConfirmDialog(context, "Succès", successString);
+							DialogHandler.showInformationDialog(context, "Succès", successString);
 							context.refreshPanel();
 						}else {
 							DialogHandler.showErrorDialogFromProtocol(context, protocolRecieved);

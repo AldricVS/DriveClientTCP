@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import data.Employee;
 import data.Order;
 import data.Product;
 import data.Protocol;
@@ -32,7 +33,7 @@ public class ProtocolListExtractor{
 	private static final int NUMBER_ITEMS_PER_PRODUCT = 5;
 	private static final int NUMBER_ITEMS_PER_ORDER = 6;
 	private static final int NUMBER_ITEMS_PER_PRODUCT_ORDER = 3;
-	private static final int NUMBER_ITEMS_PER_EMPLOYEE = 1;
+	private static final int NUMBER_ITEMS_PER_EMPLOYEE = 2;
 
 	
 	Protocol listProtocol;
@@ -240,5 +241,53 @@ public class ProtocolListExtractor{
 		}
 		logger.info("== Fin de la liste des employés ==");
 		return listUser;
+	}
+	
+	public ArrayList<Employee> extractEmployeeListV2() throws InvalidProtocolException {
+		//employe string is written like this : "name;date"
+		ArrayList<Employee> employeesList = new ArrayList<Employee>();
+		int max = listProtocol.getOptionsListSize();
+		int numberOfEmployee = 0;
+		try {
+			numberOfEmployee = Integer.parseInt(listProtocol.getOptionsElement(0));
+		} catch(NumberFormatException e) {
+			logger.error(listProtocol.getOptionsElement(0) + " cannot be changed to an integer.");
+			throw new InvalidProtocolException("Une erreur dans le compte des employés a été trouvée.");
+		} catch (IndexOutOfBoundsException ex2) {
+			logger.error("Received employee list cannot be used");
+			throw new InvalidProtocolException("Impossible de lancer le compte des employés.");
+		}
+		
+		if (max-1 != numberOfEmployee) {
+			throw new InvalidProtocolException("Une erreur dans le compte des employés a été trouvée.");
+		}
+		
+		logger.info("== Listage des " + numberOfEmployee + " employés recus ==");
+		String employeeString = "";
+		try {
+			for (int i = 1; i < max; i++) {
+				employeeString = listProtocol.getOptionsElement(i);
+				logger.info(employeeString);
+				String[] employee = employeeString.split(";");
+				String employeeName = employee[0];
+				String employeeDate = employee[1].equals("null") ? null : employee[1];
+				/*
+				if(employee.length != NUMBER_ITEMS_PER_EMPLOYEE) {
+					logger.error("Employee list recieved is not valid : the string \"" + employeeString +"\" is not well-formed.");
+					throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
+				}
+				*/
+				employeesList.add(new Employee(employeeName, employeeDate));
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			logger.error("Employee list recieved is not valid : the string \"" + employeeString +"\" is not well-formed.");
+			throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
+		} catch (NumberFormatException e) {
+			logger.error("A number cannot be readed in the line \"" + employeeString + "\"");
+			throw new InvalidProtocolException(ERROR_EMPLOYEE_LIST);
+		}
+		logger.info("== Fin de la liste des employés ==");
+		return employeesList;
 	}
 }

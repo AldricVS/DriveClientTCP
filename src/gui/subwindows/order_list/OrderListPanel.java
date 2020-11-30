@@ -104,6 +104,7 @@ public class OrderListPanel extends JPanel {
 			listScrollPanel.setViewportView(orderListPanel);
 			listScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			listScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			context.changeWindow(WindowName.ORDER_LIST);
 		} catch (InvalidProtocolException e) {
 			logger.error("Erreur dans l'extraction du Protocol: "+e.getMessage());
 			DialogHandler.showErrorDialog(context, "Erreur", e.getMessage());

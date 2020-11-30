@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import data.Employee;
 import data.Protocol;
 import data.User;
 import data.enums.ActionCodes;
@@ -31,23 +32,23 @@ public class EmployeePanel extends JPanel {
 	private Dimension fieldDimension;
 	private JTextField employeeNameField = new JTextField();
 	//private JButton changePasswordButton = new JButton("Reinitialiser le mot de passe");
-	private JButton deleteEmployeeButton = new JButton("Virer l'employé");
+	private JButton deleteEmployeeButton = new JButton("Renvoyer l'employé");
 	
 	private EmployeeListPanel context;
-	private User employee;
+	private Employee employee;
 	/**
 	 * 
 	 * @param product the product shown in this row
 	 * @param employeeDimension Dimension of the Panel
 	 */
-	public EmployeePanel(EmployeeListPanel context, User employee, Dimension employeeDimension) {
+	public EmployeePanel(EmployeeListPanel context, Employee employee, Dimension employeeDimension) {
 		this.context = context;
 		this.employee = employee;
 		this.productDimension = employeeDimension;
 		fieldDimension = new Dimension(employeeDimension.width / 4, employeeDimension.height / 6);
 		buttonDimension = new Dimension(employeeDimension.width / 5, 2 * employeeDimension.height / 3);
 		
-		setText(employee);
+		setText();
 		init();
 		initField();
 		initButton();
@@ -58,8 +59,15 @@ public class EmployeePanel extends JPanel {
 		setMinimumSize(productDimension);
 	}
 	
-	private void setText(User employee) {
-		employeeNameField.setText(employee.getName());
+	private void setText() {
+		String descriptionString = employee.getName();
+		String lastConnectionDate = employee.getLastConnectionDate();
+		if(lastConnectionDate != null) {
+			descriptionString += ". Dernière connexion le " + lastConnectionDate + ".";
+		}else {
+			descriptionString += ". Jamais connecté pour l'instant.";
+		}
+		employeeNameField.setText(descriptionString);
 	}
 
 	private void initField() {

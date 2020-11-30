@@ -143,7 +143,7 @@ public class ServerConnectionHandler {
 			//throw socketException when server shutdown
 			try {
 				String answer = inputFlow.readLine();
-				logger.info(answer);
+				//logger.info(answer);
 				if (answer.isEmpty()) {
 					throw new InvalidProtocolException("Le Serveur a renvoyé une réponse vide");
 				}

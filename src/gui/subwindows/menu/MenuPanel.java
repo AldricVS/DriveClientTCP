@@ -190,7 +190,6 @@ public class MenuPanel extends JPanel {
 				
 				//if no error occurs, we can move safely to the next page
 				context.initProductList(recievedProtocol);
-				context.changeWindow(WindowName.PRODUCT_LIST);
 				
 			} catch (IOException | InvalidProtocolException ex) {
 				MainWindow.logger.error(ex.getMessage());
@@ -273,8 +272,6 @@ public class MenuPanel extends JPanel {
 				}
 				//charge order list
 				context.initListOrder(recievedProtocol);
-				//go to order page
-				context.changeWindow(WindowName.ORDER_LIST);
 			} catch (IOException | InvalidProtocolException ex) {
 				MainWindow.logger.error(ex.getMessage());
 				DialogHandler.showErrorDialog(context, "Erreur", ex.getMessage());

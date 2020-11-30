@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
 
+import data.Employee;
 import data.Protocol;
 import data.User;
 import data.enums.ActionCodes;
@@ -43,7 +44,7 @@ import process.protocol.ProtocolListExtractor;
 public class EmployeeListPanel extends JPanel {
 	public static Logger logger = LoggerUtility.getLogger(EmployeeListPanel.class, LoggerUtility.LOG_PREFERENCE);
 	private MainWindow context;
-	private ArrayList<User> listEmployee;
+	private ArrayList<Employee> listEmployee;
     
     /**
      * TITLE 
@@ -115,7 +116,7 @@ public class EmployeeListPanel extends JPanel {
 	
 	private void extractFromProtocol(Protocol protocol) throws InvalidProtocolException {
 		ProtocolListExtractor extractor = new ProtocolListExtractor(protocol);
-		listEmployee = extractor.extractEmployeeList();
+		listEmployee = extractor.extractEmployeeListV2();
 	}
 
 	/**
@@ -123,12 +124,12 @@ public class EmployeeListPanel extends JPanel {
 	 * @param employeeList The list of all employee
 	 * @param size the amount of Employee
 	 */
-	private void initEmployeePanel(List<User> employeeList) {
+	private void initEmployeePanel(List<Employee> employeeList) {
 		//clear product panel in order to be sure that we start on a fresh start
 		employeeListPanel.removeAll();
-		for (Iterator<User> i = employeeList.iterator(); i.hasNext(); ) {
-			User u = i.next();
-			employeeListPanel.add(new EmployeePanel(this, u, EMPLOYEE_LIST_DIMENSION));
+		for (Iterator<Employee> i = employeeList.iterator(); i.hasNext(); ) {
+			Employee employee = i.next();
+			employeeListPanel.add(new EmployeePanel(this, employee, EMPLOYEE_LIST_DIMENSION));
 		}
 	}
 	

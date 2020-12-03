@@ -234,7 +234,7 @@ public class ConnexionPanel extends JPanel {
 				dir.mkdirs();
 				
 				//lets try again
-				if (file.exists()) {
+				if (file.createNewFile()) {
 					writer = new FileWriter(file);
 					if (! (rememberId == null || rememberId.equals(""))) {
 						writer.write(rememberId);

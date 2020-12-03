@@ -133,7 +133,7 @@ public class ServerConnectionHandler {
 			
 			//create the string of the protocol
 			String protocolString = protcol.toString();
-			logger.info(protocolString);
+			//logger.info(protocolString);
 			
 			//send the message
 			outputFlow.println(protocolString);
